@@ -653,9 +653,9 @@ controls.addEventListener('start', () => { autoCam = false; $('l-cam').checked =
 for (const r of document.querySelectorAll('input[name=trk]'))
   r.addEventListener('change', e => { if (e.target.checked) setTrack(e.target.value); });
 
-$('valid').innerHTML = '<b>Cross-validation</b><br>' + S.cross_validation.map(c =>
-  `${c.highres_date.slice(5)} ${c.sensor} vs VIIRS: <b>${c.ratio}×</b> area, IoU ${c.iou}`
-).join('<br>') + `<br><br>Peak envelope <b>${S.envelope_km2.toLocaleString()} km²</b>`;
+// Cross-validation figures stay in scene.json (S.cross_validation) and in the README;
+// they are just not shown in the panel.
+$('valid').innerHTML = `Peak envelope <b>${S.envelope_km2.toLocaleString()} km²</b>`;
 
 // ── orientation gizmo ───────────────────────────────────────────────────────
 const gz = $('gizmo').getContext('2d');
