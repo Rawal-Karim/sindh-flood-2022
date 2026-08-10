@@ -1,0 +1,24 @@
+# Regenerable intermediates. Everything here is rebuilt by the pipeline scripts;
+# the finished web assets in web/assets/ are committed.
+
+__pycache__/
+*.pyc
+.DS_Store
+
+# Raw UNOSAT geodatabases (~2.3 GB) — refetch with fetch_unosat.py
+unosat/
+
+# Rasterisation cache keyed to the grid — rebuilt by composite.py
+cache_rast/
+
+# Per-frame composite arrays (~180 MB). The packed 3-channel PNGs the app actually
+# loads live in web/assets/frames/ and are committed.
+composite/**/*.npy
+composite/*.npy
+
+# CHIRPS per-day clips — the stacked chirps_frame.npz is committed instead
+chirps_cache/
+
+# GeoNames dump (~32 MB) — refetch with fetch_places.py; places.json is committed
+geonames_PK.txt
+geonames_PK.zip

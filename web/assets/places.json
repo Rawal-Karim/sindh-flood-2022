@@ -1,0 +1,914 @@
+[
+ {
+  "name": "Karachi",
+  "lon": 67.0104,
+  "lat": 24.8608,
+  "pop": 11624219,
+  "fcode": "PPLA",
+  "curated": false
+ },
+ {
+  "name": "Hyderabad",
+  "lon": 68.3772,
+  "lat": 25.3969,
+  "pop": 1921275,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Sukkur",
+  "lon": 68.8589,
+  "lat": 27.7032,
+  "pop": 563851,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Rahim Yar Khan",
+  "lon": 70.3034,
+  "lat": 28.4199,
+  "pop": 517000,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Tando Bago",
+  "lon": 68.9654,
+  "lat": 24.7891,
+  "pop": 426535,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Tando Allahyar",
+  "lon": 68.7174,
+  "lat": 25.4605,
+  "pop": 421923,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Larkana",
+  "lon": 68.212,
+  "lat": 27.559,
+  "pop": 364033,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Nawabshah",
+  "lon": 68.4037,
+  "lat": 26.2394,
+  "pop": 363138,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Sinjhoro",
+  "lon": 68.8087,
+  "lat": 26.0301,
+  "pop": 354709,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Malir Cantonment",
+  "lon": 67.2059,
+  "lat": 24.9434,
+  "pop": 300000,
+  "fcode": "PPLX",
+  "curated": false
+ },
+ {
+  "name": "Saddiqabad",
+  "lon": 70.1265,
+  "lat": 28.3091,
+  "pop": 274210,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mirpur Khas",
+  "lon": 69.0126,
+  "lat": 25.5276,
+  "pop": 267833,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Kunri",
+  "lon": 69.5657,
+  "lat": 25.1787,
+  "pop": 237063,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Digri",
+  "lon": 69.111,
+  "lat": 25.1566,
+  "pop": 234578,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Jacobabad",
+  "lon": 68.4376,
+  "lat": 28.2819,
+  "pop": 219315,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Khuzdar",
+  "lon": 66.611,
+  "lat": 27.8119,
+  "pop": 218112,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Shikarpur",
+  "lon": 68.6382,
+  "lat": 27.9556,
+  "pop": 204938,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Dadu",
+  "lon": 67.7769,
+  "lat": 26.7303,
+  "pop": 201017,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Talhar",
+  "lon": 68.8144,
+  "lat": 24.8845,
+  "pop": 200014,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Dajal",
+  "lon": 70.3761,
+  "lat": 29.5577,
+  "pop": 200000,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Hub",
+  "lon": 66.8853,
+  "lat": 25.0255,
+  "pop": 195661,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Garhi Khairo",
+  "lon": 67.979,
+  "lat": 28.0572,
+  "pop": 193297,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Khairpur Mir\u2019s",
+  "lon": 68.7592,
+  "lat": 27.5295,
+  "pop": 191044,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Tando Adam",
+  "lon": 68.662,
+  "lat": 25.7682,
+  "pop": 174291,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Arif Wala",
+  "lon": 66.2959,
+  "lat": 26.3248,
+  "pop": 157063,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Jampur",
+  "lon": 70.5952,
+  "lat": 29.6424,
+  "pop": 155243,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Umarkot",
+  "lon": 69.7418,
+  "lat": 25.3633,
+  "pop": 144558,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Moro",
+  "lon": 68.0002,
+  "lat": 26.6632,
+  "pop": 142685,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Khanpur",
+  "lon": 70.6569,
+  "lat": 28.6474,
+  "pop": 142426,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Manjhand",
+  "lon": 68.2368,
+  "lat": 25.9083,
+  "pop": 140766,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Daur",
+  "lon": 68.3183,
+  "lat": 26.4553,
+  "pop": 128958,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Dokri",
+  "lon": 68.0971,
+  "lat": 27.3742,
+  "pop": 125000,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Shahdadkot",
+  "lon": 67.9068,
+  "lat": 27.8473,
+  "pop": 120687,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Ghotki",
+  "lon": 69.3157,
+  "lat": 28.0044,
+  "pop": 119879,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Badin",
+  "lon": 68.837,
+  "lat": 24.656,
+  "pop": 117455,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Tando Muhammad Khan",
+  "lon": 68.5368,
+  "lat": 25.1238,
+  "pop": 114406,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Shahdadpur",
+  "lon": 68.6228,
+  "lat": 25.9254,
+  "pop": 113342,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Dera Murad Jamali",
+  "lon": 68.2231,
+  "lat": 28.5466,
+  "pop": 106952,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Kotri",
+  "lon": 68.3083,
+  "lat": 25.3657,
+  "pop": 106615,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Pano Aqil",
+  "lon": 69.1111,
+  "lat": 27.8562,
+  "pop": 102701,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Qubo Saeed Khan",
+  "lon": 67.7089,
+  "lat": 27.8744,
+  "pop": 99308,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Kandhkot",
+  "lon": 69.1797,
+  "lat": 28.2457,
+  "pop": 99155,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Gambat",
+  "lon": 68.5215,
+  "lat": 27.3517,
+  "pop": 93884,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Rohri",
+  "lon": 68.895,
+  "lat": 27.692,
+  "pop": 92135,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Daharki",
+  "lon": 69.7025,
+  "lat": 28.0536,
+  "pop": 90177,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Thul",
+  "lon": 68.7755,
+  "lat": 28.2403,
+  "pop": 88554,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Ratodero",
+  "lon": 68.289,
+  "lat": 27.8023,
+  "pop": 81935,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Kambar",
+  "lon": 68.0007,
+  "lat": 27.5875,
+  "pop": 77481,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Zahir Pir",
+  "lon": 70.5234,
+  "lat": 28.8128,
+  "pop": 76979,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mirpur Mathelo",
+  "lon": 69.5491,
+  "lat": 28.0214,
+  "pop": 74651,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Sakrand",
+  "lon": 68.2744,
+  "lat": 26.1384,
+  "pop": 72040,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Tando Jam",
+  "lon": 68.5292,
+  "lat": 25.4281,
+  "pop": 71760,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Hala",
+  "lon": 68.422,
+  "lat": 25.8146,
+  "pop": 71094,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Usta Mohammad",
+  "lon": 68.0437,
+  "lat": 28.1772,
+  "pop": 64632,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Sibi",
+  "lon": 67.8773,
+  "lat": 29.543,
+  "pop": 64069,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Sanghar",
+  "lon": 68.9492,
+  "lat": 26.0469,
+  "pop": 62033,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Pir Jo Goth",
+  "lon": 68.6185,
+  "lat": 27.5918,
+  "pop": 54266,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mithi",
+  "lon": 69.7971,
+  "lat": 24.737,
+  "pop": 52376,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Ubauro",
+  "lon": 69.7311,
+  "lat": 28.1643,
+  "pop": 50981,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Rajanpur",
+  "lon": 70.3297,
+  "lat": 29.1041,
+  "pop": 50682,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Matli",
+  "lon": 68.6559,
+  "lat": 25.0429,
+  "pop": 50398,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Kandiaro",
+  "lon": 68.2102,
+  "lat": 27.0592,
+  "pop": 44382,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Thatta",
+  "lon": 67.9235,
+  "lat": 24.7475,
+  "pop": 44302,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Sehwan",
+  "lon": 67.8613,
+  "lat": 26.4249,
+  "pop": 41150,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Karachi University Employees Co-operative Housing Society",
+  "lon": 67.1194,
+  "lat": 24.9628,
+  "pop": 41000,
+  "fcode": "PPLX",
+  "curated": false
+ },
+ {
+  "name": "Khairpur",
+  "lon": 69.7036,
+  "lat": 28.0644,
+  "pop": 40083,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Chak",
+  "lon": 68.8338,
+  "lat": 27.8584,
+  "pop": 40000,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "New Badah",
+  "lon": 68.0319,
+  "lat": 27.3417,
+  "pop": 38855,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mehrabpur",
+  "lon": 68.0255,
+  "lat": 28.1077,
+  "pop": 35263,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Ranipur",
+  "lon": 68.5062,
+  "lat": 27.2872,
+  "pop": 34337,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Kashmore",
+  "lon": 69.5836,
+  "lat": 28.4326,
+  "pop": 33732,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Naudero",
+  "lon": 68.3609,
+  "lat": 27.6668,
+  "pop": 33455,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Setharja Old",
+  "lon": 68.4688,
+  "lat": 27.2127,
+  "pop": 32651,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mehar",
+  "lon": 67.8205,
+  "lat": 27.1803,
+  "pop": 30429,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "K.N. Shah",
+  "lon": 67.7349,
+  "lat": 27.0906,
+  "pop": 30286,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Ghauspur",
+  "lon": 69.0824,
+  "lat": 28.1388,
+  "pop": 29767,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Bela",
+  "lon": 66.3118,
+  "lat": 26.2272,
+  "pop": 29380,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mastung",
+  "lon": 66.8455,
+  "lat": 29.7997,
+  "pop": 29082,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Nasirabad",
+  "lon": 67.9164,
+  "lat": 27.3814,
+  "pop": 27809,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Sita Road",
+  "lon": 67.85,
+  "lat": 27.0333,
+  "pop": 27587,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Kalat",
+  "lon": 66.5936,
+  "lat": 29.0266,
+  "pop": 26701,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Kot Diji",
+  "lon": 68.7082,
+  "lat": 27.3416,
+  "pop": 25616,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Mian Sahib",
+  "lon": 68.6418,
+  "lat": 28.1534,
+  "pop": 25000,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Kot Samaba",
+  "lon": 70.4684,
+  "lat": 28.5521,
+  "pop": 22953,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Khanpur Mahar",
+  "lon": 69.413,
+  "lat": 27.8409,
+  "pop": 22273,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Hingorja",
+  "lon": 68.416,
+  "lat": 27.2109,
+  "pop": 22263,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Naukot",
+  "lon": 69.4015,
+  "lat": 24.8582,
+  "pop": 22081,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Shahpur Chakar",
+  "lon": 68.6501,
+  "lat": 26.1541,
+  "pop": 21446,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Chhor",
+  "lon": 69.7844,
+  "lat": 25.5126,
+  "pop": 21178,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Pad Idan",
+  "lon": 68.3009,
+  "lat": 26.7746,
+  "pop": 20919,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Dhoro Naro",
+  "lon": 69.5709,
+  "lat": 25.5048,
+  "pop": 19907,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Gharo",
+  "lon": 67.5853,
+  "lat": 24.7418,
+  "pop": 19524,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Pakistan Employees Cooperative Housing Society",
+  "lon": 67.0642,
+  "lat": 24.8742,
+  "pop": 19500,
+  "fcode": "PPLX",
+  "curated": false
+ },
+ {
+  "name": "Jhol",
+  "lon": 68.8887,
+  "lat": 25.9553,
+  "pop": 19363,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Bhit Shah",
+  "lon": 68.4914,
+  "lat": 25.8056,
+  "pop": 19325,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Matiari",
+  "lon": 68.4467,
+  "lat": 25.5971,
+  "pop": 18929,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Warah",
+  "lon": 67.7965,
+  "lat": 27.448,
+  "pop": 18724,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Dera Bugti",
+  "lon": 69.1585,
+  "lat": 29.0362,
+  "pop": 18120,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Tharu Shah",
+  "lon": 68.1176,
+  "lat": 26.9423,
+  "pop": 17698,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Naushahro Feroze",
+  "lon": 68.1226,
+  "lat": 26.8401,
+  "pop": 17631,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Gadani",
+  "lon": 66.7322,
+  "lat": 25.1188,
+  "pop": 17540,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Dadhar",
+  "lon": 67.6517,
+  "lat": 29.4749,
+  "pop": 17276,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Bhan Saeedabad",
+  "lon": 67.7214,
+  "lat": 26.5583,
+  "pop": 16961,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Goth Radhan",
+  "lon": 67.9535,
+  "lat": 27.1985,
+  "pop": 16786,
+  "fcode": "PPL",
+  "curated": false
+ },
+ {
+  "name": "Uthal",
+  "lon": 66.6219,
+  "lat": 25.8072,
+  "pop": 16483,
+  "fcode": "PPLA2",
+  "curated": false
+ },
+ {
+  "name": "Johi",
+  "lon": 67.6143,
+  "lat": 26.6923,
+  "pop": 16311,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "S\u016bi",
+  "lon": 69.3167,
+  "lat": 28.6167,
+  "pop": 0,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Qambar",
+  "lon": 67.6522,
+  "lat": 27.1601,
+  "pop": 0,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Mohenjo-daro",
+  "lon": 68.137,
+  "lat": 27.3221,
+  "pop": 0,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Dera Allah Yar",
+  "lon": 68.3508,
+  "lat": 28.3735,
+  "pop": 0,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Jamshoro",
+  "lon": 68.2802,
+  "lat": 25.4361,
+  "pop": 0,
+  "fcode": "PPLA2",
+  "curated": true
+ },
+ {
+  "name": "Sh\u012bk\u0101rpur",
+  "lon": 67.69,
+  "lat": 28.749,
+  "pop": 0,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Sui",
+  "lon": 69.1789,
+  "lat": 28.6317,
+  "pop": 0,
+  "fcode": "PPL",
+  "curated": true
+ },
+ {
+  "name": "Jhat Pat",
+  "lon": 68.187,
+  "lat": 28.392,
+  "pop": 0,
+  "fcode": "PPL",
+  "curated": true
+ }
+]

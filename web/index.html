@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sindh 2022 Flood — 3D Observed Replay</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0d1f33}
+#view{position:absolute;inset:0}
+#loading{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:#cfe4f3;z-index:50;
+  transition:opacity .7s}
+#loading.done{opacity:0;pointer-events:none}
+#loading h1{font-size:15px;letter-spacing:4px;text-transform:uppercase;font-weight:800}
+#loading p{font-size:10px;letter-spacing:2px;color:#4a6c88;margin-top:8px}
+
+.panel{position:absolute;background:rgba(255,255,255,.90);backdrop-filter:blur(10px);
+  border:1px solid rgba(20,60,100,.16);border-radius:5px;padding:12px 14px;z-index:20}
+#hud{top:16px;left:16px;width:264px}
+#hud h1{font-size:12.5px;font-weight:800;letter-spacing:1.1px;line-height:1.35;
+  text-transform:uppercase}
+#hud .sub{font-size:9px;color:#4a6c88;letter-spacing:1.6px;margin-top:3px;
+  text-transform:uppercase}
+#date{font-size:26px;font-weight:800;margin-top:11px;line-height:1;letter-spacing:-.4px}
+#area{font-size:11px;color:#1462a5;font-weight:700;margin-top:5px}
+#srcline{font-size:9px;color:#5c7d99;margin-top:5px;line-height:1.55}
+#warn{font-size:9px;color:#a8631a;margin-top:6px;line-height:1.5;display:none}
+
+#ctl{bottom:16px;left:16px;right:16px;display:flex;align-items:center;gap:14px}
+#play{width:34px;height:34px;border:none;border-radius:50%;background:#12639f;
+  color:#fff;font-size:13px;cursor:pointer;flex-shrink:0}
+#play:hover{background:#0d4f80}
+#scrub{flex:1;min-width:0;accent-color:#12639f;cursor:pointer}
+#track-wrap{position:relative;flex:1;min-width:0}
+#track-wrap #scrub{width:100%;position:relative;z-index:2}
+/* the reconstructed stretch of the calendar, hatched to separate it from measurement */
+#pre-band{position:absolute;left:0;top:50%;transform:translateY(-50%);height:14px;
+  border-radius:3px;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(45deg,rgba(200,120,26,.20) 0 5px,
+    rgba(200,120,26,.07) 5px 10px);
+  border:1px solid rgba(200,120,26,.35)}
+#ticks{position:relative;height:12px;margin-top:1px;
+  pointer-events:none;font-size:8px;color:#5c7d99}
+#ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+/* sits above the control bar rather than top-centre, where it collided with the HUD */
+#badge{position:absolute;bottom:74px;left:50%;transform:translateX(-50%);
+  background:rgba(168,99,26,.94);color:#fff;font-size:10px;font-weight:700;
+  letter-spacing:.5px;padding:6px 16px;border-radius:5px;z-index:30;
+  opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;
+  box-shadow:0 2px 10px rgba(0,0,0,.18)}
+#badge.vis{opacity:1}
+
+/* settlement labels — projected from 3-D each frame, so they need no layout flow */
+#labels{position:absolute;inset:0;z-index:15;pointer-events:none}
+.lbl{position:absolute;top:0;left:0;display:none;white-space:nowrap;
+  transform-origin:0 0;font-size:9.5px;line-height:1;color:#16232f;
+  text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 6px rgba(255,255,255,.9)}
+.lbl i{display:inline-block;width:4px;height:4px;border-radius:50%;
+  background:#d24a2f;margin-right:4px;vertical-align:middle;
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}
+.lbl span{vertical-align:middle;font-weight:600;letter-spacing:.2px}
+.lbl.mid{font-size:10.5px}
+.lbl.mid i{width:5px;height:5px}
+.lbl.big{font-size:12px;font-weight:800}
+.lbl.big i{width:6px;height:6px;background:#b8341c}
+
+#side{top:16px;right:16px;width:206px}
+#side h3{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#12639f;
+  margin-bottom:9px;font-weight:700;border-bottom:1px solid rgba(18,99,159,.2);
+  padding-bottom:5px}
+.row{display:flex;align-items:center;font-size:10px;margin-bottom:7px;cursor:pointer;
+  user-select:none}
+.row input{margin-right:8px;accent-color:#12639f;cursor:pointer}
+.sw{width:15px;height:4px;border-radius:2px;margin-right:7px;flex-shrink:0}
+.slab{display:flex;align-items:center;font-size:9px;color:#405f78;margin:9px 0 4px}
+.slab input[type=range]{flex:1;margin-left:8px;accent-color:#12639f}
+#valid{margin-top:11px;font-size:8.5px;color:#5c7d99;line-height:1.6}
+#valid b{color:#0d1f33}
+#legend{position:absolute;bottom:74px;right:16px;width:206px}
+.lg{display:flex;align-items:center;font-size:9px;margin-bottom:5px}
+#gizmo{position:absolute;bottom:74px;left:16px;width:74px;height:74px;z-index:20;
+  pointer-events:none}
+</style>
+</head>
+<body>
+<div id="view"></div>
+
+<div id="loading"><h1>Sindh 2022 Flood</h1><p>Loading terrain &amp; observations…</p></div>
+
+<div class="panel" id="hud">
+  <h1>2022 Indus Flood — Observed Replay</h1>
+  <div class="sub">Sindh &amp; SE Balochistan</div>
+  <div id="date">—</div>
+  <div id="area">—</div>
+  <div id="srcline">—</div>
+  <div id="warn"></div>
+</div>
+
+<div class="panel" id="side">
+  <h3>Layers</h3>
+  <label class="row"><input type="checkbox" id="l-water" checked><span class="sw" style="background:#1a78d8"></span>Flood water</label>
+  <label class="row"><input type="checkbox" id="l-env"><span class="sw" style="background:#7a4fd0"></span>Peak extent envelope</label>
+  <label class="row"><input type="checkbox" id="l-perm" checked><span class="sw" style="background:#0b3c78"></span>Permanent water</label>
+  <label class="row"><input type="checkbox" id="l-bund" checked><span class="sw" style="background:#c8452a"></span>Flood bunds</label>
+  <label class="row"><input type="checkbox" id="l-breach"><span class="sw" style="background:#d400a0"></span>2022 breach candidates</label>
+  <label class="row"><input type="checkbox" id="l-unobs" checked><span class="sw" style="background:#9aa8b4"></span>Shade unobserved</label>
+  <label class="row"><input type="checkbox" id="l-flow" checked><span class="sw" style="background:#5aa9e6"></span>Animate water flow</label>
+  <label class="row"><input type="checkbox" id="l-age" checked><span class="sw" style="background:#b9c4cd"></span>Fade stale readings</label>
+  <label class="row"><input type="checkbox" id="l-torrent" checked><span class="sw" style="background:#7fd4ff"></span>Hill torrents</label>
+  <label class="row"><input type="checkbox" id="l-cam" checked><span class="sw" style="background:#8a97a3"></span>Guided camera</label>
+  <label class="row"><input type="checkbox" id="l-names" checked><span class="sw" style="background:#d24a2f"></span>Town names</label>
+
+  <h3 style="margin-top:13px">Track</h3>
+  <label class="row"><input type="radio" name="trk" value="viirs" checked>VIIRS 375 m · weekly</label>
+  <label class="row"><input type="radio" name="trk" value="highres">S1/S2/LS8 10–30 m</label>
+
+  <div class="slab">Relief <input type="range" id="exag" min="1" max="30" step="0.5" value="14"></div>
+  <div class="slab">Speed <input type="range" id="speed" min="0.25" max="4" step="0.25" value="1"></div>
+
+  <div id="valid"></div>
+</div>
+
+<div class="panel" id="legend">
+  <h3>Flood coverage</h3>
+  <div class="lg"><span class="sw" style="background:rgba(26,120,216,.30)"></span>partial (&lt;30%)</div>
+  <div class="lg"><span class="sw" style="background:rgba(26,120,216,.65)"></span>moderate</div>
+  <div class="lg"><span class="sw" style="background:rgba(26,120,216,.95)"></span>full pixel</div>
+  <div class="lg"><span class="sw" style="background:rgba(26,120,216,.25)"></span>stale reading (faded)</div>
+  <div class="lg"><span class="sw" style="background:#9aa8b4"></span>never observed</div>
+</div>
+
+<div id="badge">⚠ Reconstructed — CHIRPS rainfall + DEM-routed drainage. Not satellite-observed.</div>
+
+<div class="panel" id="ctl">
+  <button id="play">❚❚</button>
+  <div id="track-wrap">
+    <div id="pre-band"></div>
+    <input type="range" id="scrub" min="0" max="1" step="0.001" value="0">
+    <div id="ticks"></div>
+  </div>
+</div>
+
+<canvas id="gizmo" width="148" height="148"></canvas>
+
+<script type="importmap">
+{"imports":{"three":"./vendor/three.module.js"}}
+</script>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
