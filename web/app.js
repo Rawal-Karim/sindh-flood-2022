@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '15';
+const BUILD = '16';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -587,6 +587,11 @@ async function loadOverlays() {
     addLines(await (await fetch(A(O.drains))).json(), 0x7a5cc0, 2, 0.60, 'drains', 'Drain');
   if (O.srp_subcatchments)
     addLines(await (await fetch(A(O.srp_subcatchments))).json(), 0xd4761a, 2, 1.05, 'srpsub', 'SRP sub-catchment');
+  // Vector twin of the baked mask, so the Nai catchments are pickable like every
+  // other layer. The mask still draws the coloured fill; this adds the outline.
+  if (O.nai_subcatchments)
+    addLines(await (await fetch(A(O.nai_subcatchments))).json(), 0xc86a2a, 2, 1.15,
+             'naisub', 'Nai sub-catchment');
   if (O.breach_candidates_2022) {
     const gj = await (await fetch(A(O.breach_candidates_2022))).json();
     // Magenta, not red: settlement dots are red, and these are a different kind of
@@ -698,6 +703,7 @@ function highlight(f) {
 const NICE = { name: 'Name', Name: 'Name', adm2_name: 'District', adm1_name: 'Province',
                P_Name: 'Province', code: 'Code', bund_name: 'Bund', Model_Name: 'Model',
                area_km2: 'Area (km²)', Area: 'Area (km²)', pop: 'Population',
+               drains_to: 'Drains to',
                NAME: 'Name', osm_name: 'OSM name' };
 
 function showTip(hit, px, py) {
@@ -934,7 +940,11 @@ $('l-lakes').addEventListener('change', e => { areaMat.uniforms.lakeOn.value = e
 $('l-canals').addEventListener('change', e => { const o = overlayGroup.getObjectByName('canals'); if (o) o.visible = e.target.checked; });
 $('l-drains').addEventListener('change', e => { const o = overlayGroup.getObjectByName('drains'); if (o) o.visible = e.target.checked; });
 $('l-srpsub').addEventListener('change', e => { const o = overlayGroup.getObjectByName('srpsub'); if (o) o.visible = e.target.checked; });
-$('l-sub').addEventListener('change', e => { areaMat.uniforms.subOn.value = e.target.checked ? 1 : 0; });
+$('l-sub').addEventListener('change', e => {
+  areaMat.uniforms.subOn.value = e.target.checked ? 1 : 0;
+  const o = overlayGroup.getObjectByName('naisub');
+  if (o) o.visible = e.target.checked;
+});
 $('l-cities').addEventListener('change', e => { const o = overlayGroup.getObjectByName('cities'); if (o) o.visible = e.target.checked; });
 $('l-breach').addEventListener('change', e => { const o = overlayGroup.getObjectByName('breach'); if (o) o.visible = e.target.checked; });
 $('l-torrent').addEventListener('change', e => { torrentsOn = e.target.checked; update(); });
@@ -992,7 +1002,8 @@ function drawGizmo() {
 await loadOverlays();
 await loadPlaces();
 for (const [n, on] of [['districts', false], ['cities', false],
-                       ['canals', false], ['drains', false], ['srpsub', false]]) {
+                       ['canals', false], ['drains', false], ['srpsub', false],
+                       ['naisub', false]]) {
   const o = overlayGroup.getObjectByName(n);
   if (o) o.visible = on;
 }

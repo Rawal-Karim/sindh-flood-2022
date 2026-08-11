@@ -325,7 +325,8 @@
   "canals": "canals.geojson",
   "drains": "drains.geojson",
   "srp_subcatchments": "srp_subcatchments.geojson",
-  "sindh_province": "sindh_province.geojson"
+  "sindh_province": "sindh_province.geojson",
+  "nai_subcatchments": "nai_subcatchments.geojson"
  },
  "rain": {
   "file": "wetness.png",

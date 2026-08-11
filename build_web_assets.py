@@ -181,6 +181,31 @@ if sp.exists() and mp.exists():
     print(f"subcatch.png: {sub_info['count']} catchments, "
           f"{int((lab > 0).sum()):,} cells")
 
+    # Also vectorise them. The raster drives the coloured fill, but picking, hover
+    # popups and click-to-zoom all run off vector features, so a mask alone left the
+    # Nai catchments as the only unpickable layer in the app.
+    from rasterio.features import shapes as _shapes
+    from shapely.geometry import shape as _shape, mapping as _mapping
+    from shapely.ops import unary_union as _union
+    tr = rasterio.transform.from_bounds(B.left, B.bottom, B.right, B.top, GW, GH)
+    by_id = {}
+    for geom, val in _shapes(lab.astype(np.int32), mask=(lab > 0), transform=tr):
+        by_id.setdefault(int(val), []).append(_shape(geom))
+    meta_by_id = {c["id"]: c for c in sub_info.get("catchments", [])}
+    recs = []
+    for cid, parts in sorted(by_id.items()):
+        m = meta_by_id.get(cid, {})
+        g = _union(parts).simplify(0.0015, preserve_topology=True)
+        if g.is_empty:
+            continue
+        recs.append(dict(geometry=g, id=cid, name=m.get("name", f"catchment {cid}"),
+                         area_km2=m.get("area_km2"), drains_to=m.get("drains_to")))
+    if recs:
+        _gpd.GeoDataFrame(recs, crs="EPSG:4326").to_file(
+            OUT / "nai_subcatchments.geojson", driver="GeoJSON")
+        print(f"nai_subcatchments.geojson: {len(recs)} polygons -> "
+              f"{(OUT/'nai_subcatchments.geojson').stat().st_size/1024:.0f} KB")
+
 # ── rainfall (CHIRPS) ───────────────────────────────────────────────────────
 # Drives the monsoon act: per-day scalars set rain intensity, cloud cover and light,
 # while the seasonal cumulative pattern darkens the ground where rain actually fell.
@@ -216,7 +241,8 @@ else:
 overlays = {}
 for name in ("bunds", "permanent_water", "breach_candidates_2022",
              "provinces", "districts", "cities", "lakes",
-             "canals", "drains", "srp_subcatchments", "sindh_province"):
+             "canals", "drains", "srp_subcatchments", "sindh_province",
+             "nai_subcatchments"):
     src_p = ROOT / "weblayers" / f"{name}.geojson"
     if src_p.exists():
         shutil.copy(src_p, OUT / f"{name}.geojson")
