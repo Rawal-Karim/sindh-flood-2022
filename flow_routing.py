@@ -223,10 +223,19 @@ print("wrote web/assets/arrival.png + arrival_meta.json")
 
 
 # ── sub-catchments ──────────────────────────────────────────────────────────
-# Pour points are the cells where a mountain channel crosses out of dissected terrain
-# onto the plain. Labels then propagate upstream: a cell drains into its receiver, so
-# processing in ASCENDING elevation guarantees the receiver already carries a label
-# before the cell that feeds it is reached.
+# Pour points are the Sindh Irrigation Department gauging stations (and the Nai Gaj
+# dam axis), taken from the Department's own Nai definitions rather than a gazetteer.
+# A gauge is the right outlet for a catchment: the area above it is exactly the
+# drainage the gauge measures.
+#
+# Two earlier approaches failed and are worth not repeating. Deriving outlets from
+# "where a channel leaves dissected terrain" gave one catchment of 47,502 km2, because
+# the epsilon fill lays an artificial channel along the foot of the range that merges
+# every Nai outlet into a single trunk. Anchoring to GeoNames names instead matched
+# "nai" as a substring and picked up Pashto names in the far north (Kuchanai,
+# Karkanai); with a whole-word match, Gaj and Naing failed to snap at all because the
+# search was restricted to the dissected-channel mask and the gauges sit on valley
+# floors where local relief falls below the threshold.
 @njit(cache=True)
 def label_upstream(rec, order_asc, pour_ids):
     n = rec.size
@@ -242,82 +251,64 @@ def label_upstream(rec, order_asc, pour_ids):
     return lab
 
 
+NAIS = json.loads((ROOT / "nais_sid.json").read_text())
+SNAP_KM = 5.0                      # gauge coordinates are approximate
+ACC_FLOOR = 60                     # cells; ignore hillslope pixels when snapping
 
-# ── gazetteer streams (used both to place and to name the catchments) ───────
-stream_pts_all = []
-gn = ROOT / "geonames_PK.txt"
-if gn.exists():
-    for line in gn.read_text(encoding="utf8", errors="replace").split("\n"):
-        p = line.split("\t")
-        if len(p) < 15 or p[6] != "H" or p[7] not in ("STM", "STMI", "WAD", "STMX"):
-            continue
-        try:
-            lat, lon = float(p[4]), float(p[5])
-        except ValueError:
-            continue
-        if not (B.left <= lon <= B.right and B.bottom <= lat <= B.top):
-            continue
-        col = int((lon - B.left) / (B.right - B.left) * GW)
-        row = int((B.top - lat) / (B.top - B.bottom) * GH)
-        if 0 <= row < GH and 0 <= col < GW:
-            stream_pts_all.append((p[1], row, col))
-print(f"{len(stream_pts_all)} gazetteer stream points in AOI")
-
-# Pour points are the NAMED Nais themselves, not every channel exit.
-#
-# Deriving outlets from "where a channel leaves the dissected mask" does not work here.
-# The epsilon fill lays an artificial channel along the foot of the range that links
-# every Nai outlet into one trunk, so a single exit ends up owning the whole Kirthar --
-# measured at 47,502 km2 under one name, a third of the frame. Anchoring instead to
-# GeoNames stream points gives catchments that are named by construction and sized by
-# real drainage. Nesting resolves itself: a cell inherits its receiver's label, so the
-# innermost Nai downstream of it wins.
 recg = rec.ravel()
 accg = acc.ravel()
-SNAP = 6                     # cells searched around a gazetteer point for the channel
-
-# "nai" must be a WHOLE WORD. As a substring it matches Pashto names in the far
-# north of the AOI -- Kuchanai, Karkanai, Kamkai Sharanai -- which then dominated
-# the result with 10,000+ km2 catchments that are not hill torrents at all.
-NAI_RE = re.compile(r"\bnai\b", re.I)
-nai_pts = [(nm, r, c) for nm, r, c in stream_pts_all if NAI_RE.search(nm)]
-print(f"\n{len(nai_pts)} named Nai points in AOI")
-
 pour = np.zeros(GH * GW, np.int32)
 pour_meta = {}
 pid = 0
-for nm, row, col in sorted(nai_pts, key=lambda t: t[0]):
-    r0, r1 = max(row - SNAP, 0), min(row + SNAP + 1, GH)
-    c0, c1 = max(col - SNAP, 0), min(col + SNAP + 1, GW)
-    win = np.where(chan[r0:r1, c0:c1], acc[r0:r1, c0:c1], -1)
-    if win.max() <= 0:
-        continue             # gazetteer point is not near any mapped channel
-    dr, dc = np.unravel_index(int(win.argmax()), win.shape)
+rad = int(round(SNAP_KM * 1000 / min(DX, DY)))
+
+for nai in sorted(NAIS, key=lambda n: n["name"]):
+    lon, lat = nai["lon"], nai["lat"]
+    if not (B.left <= lon <= B.right and B.bottom <= lat <= B.top):
+        print(f"  {nai['name']}: outside AOI, skipped")
+        continue
+    col = int((lon - B.left) / (B.right - B.left) * GW)
+    row = int((B.top - lat) / (B.top - B.bottom) * GH)
+    r0, r1 = max(row - rad, 0), min(row + rad + 1, GH)
+    c0, c1 = max(col - rad, 0), min(col + rad + 1, GW)
+    # Snap to the largest drainage nearby, NOT to the dissected-channel mask: gauges
+    # sit on valley floors where local relief drops below the mountain threshold.
+    win = acc[r0:r1, c0:c1]
+    if win.max() < ACC_FLOOR:
+        print(f"  {nai['name']}: no drainage within {SNAP_KM} km, skipped")
+        continue
+    # Nearest substantial channel, not the largest in the window. Taking the maximum
+    # lets the snap jump onto a different, bigger river several km away, which both
+    # inflates that catchment and starves the intended one.
+    thresh = max(ACC_FLOOR, 0.25 * win.max())
+    rr, cc = np.nonzero(win >= thresh)
+    dist = np.hypot((rr + r0 - row) * DY, (cc + c0 - col) * DX)
+    k = int(dist.argmin())
+    dr, dc = int(rr[k]), int(cc[k])
     idx = (r0 + dr) * GW + (c0 + dc)
-    if pour[idx]:
-        continue             # another Nai already snapped to this exact cell
     pid += 1
     pour[idx] = pid
-    pour_meta[pid] = dict(name=nm, row=int(r0 + dr), col=int(c0 + dc),
+    pour_meta[pid] = dict(name=nai["name"], drains_to=nai.get("to"),
+                          kind=nai.get("kind"), lon=lon, lat=lat,
+                          snap_km=round(float(np.hypot((dr + r0 - row) * DY,
+                                                       (dc + c0 - col) * DX)) / 1000, 2),
                           acc_cells=float(accg[idx]))
-print(f"{pid} Nai pour points snapped to channels (search radius {SNAP} cells)")
+
+print(f"\n{pid} Nai pour points snapped (search radius {SNAP_KM} km = {rad} cells)")
 
 order_asc = np.argsort(zf.ravel()).astype(np.int64)
 labels = label_upstream(recg, order_asc, pour).reshape(GH, GW)
 
-# Names come directly from the pour point each catchment was anchored to.
 names = {L: m["name"] for L, m in pour_meta.items()}
-
 areas = {int(L): float((labels == L).sum()) * DX * DY / 1e6 for L in range(1, pid + 1)}
-named = {L: n for L, n in names.items() if areas.get(L, 0) >= 25}
-print(f"{len(named)} catchments >= 25 km2 carry a GeoNames stream name")
-for L, n in sorted(named.items(), key=lambda kv: -areas[kv[0]])[:12]:
-    print(f"   {n[:30]:<31}{areas[L]:>8,.0f} km2")
+print(f"{'Nai':<16}{'area km2':>11}  {'snap':>6}  drains to")
+for L in sorted(areas, key=lambda k: -areas[k]):
+    m = pour_meta[L]
+    print(f"  {m['name']:<14}{areas[L]:>11,.0f}  {m['snap_km']:>5.1f}k  {m['drains_to']}")
 
 np.save(ROOT / "subcatchments.npy", labels.astype(np.int32))
 (ROOT / "web/assets/subcatchments_meta.json").write_text(json.dumps(dict(
-    count=pid, snap_cells=SNAP,
-    catchments=[dict(id=int(L), name=names.get(L), area_km2=round(areas[L], 1),
-                     acc_cells=pour_meta[L]["acc_cells"])
-                for L in range(1, pid + 1) if areas[L] >= 10]), indent=1))
+    count=pid, snap_km=SNAP_KM, source="Sindh Irrigation Dept gauging stations",
+    catchments=[dict(id=int(L), **pour_meta[L], area_km2=round(areas[L], 1))
+                for L in range(1, pid + 1)]), indent=1))
 print("wrote subcatchments.npy + subcatchments_meta.json")

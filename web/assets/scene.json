@@ -1184,6 +1184,111 @@
    }
   ]
  },
+ "lakes": [
+  {
+   "name": "Manchar Lake",
+   "area_km2": 120.4
+  },
+  {
+   "name": "Hamal Lake",
+   "area_km2": 123.6
+  }
+ ],
+ "subcatchments": {
+  "count": 8,
+  "snap_km": 5.0,
+  "source": "Sindh Irrigation Dept gauging stations",
+  "catchments": [
+   {
+    "id": 1,
+    "name": "Nai Bhan",
+    "drains_to": "manchar",
+    "kind": "gauge",
+    "lon": 67.551,
+    "lat": 26.4182,
+    "snap_km": 5.14,
+    "acc_cells": 123051.0,
+    "area_km2": 1264.6
+   },
+   {
+    "id": 2,
+    "name": "Nai Chandio",
+    "drains_to": "manchar",
+    "kind": "gauge",
+    "lon": 67.721,
+    "lat": 26.214,
+    "snap_km": 0.6,
+    "acc_cells": 1742.0,
+    "area_km2": 123.2
+   },
+   {
+    "id": 3,
+    "name": "Nai Dugdu",
+    "drains_to": "hamal",
+    "kind": "gauge",
+    "lon": 67.3812,
+    "lat": 26.6945,
+    "snap_km": 3.22,
+    "acc_cells": 96104.0,
+    "area_km2": 199.9
+   },
+   {
+    "id": 4,
+    "name": "Nai Gaj",
+    "drains_to": "manchar",
+    "kind": "dam axis",
+    "lon": 67.3182,
+    "lat": 26.8731,
+    "snap_km": 1.59,
+    "acc_cells": 93060.0,
+    "area_km2": 6579.6
+   },
+   {
+    "id": 5,
+    "name": "Nai Khedro",
+    "drains_to": "hamal",
+    "kind": "gauge",
+    "lon": 67.345,
+    "lat": 26.7914,
+    "snap_km": 2.98,
+    "acc_cells": 93276.0,
+    "area_km2": 15.3
+   },
+   {
+    "id": 6,
+    "name": "Nai Naig",
+    "drains_to": "manchar",
+    "kind": "gauge",
+    "lon": 67.4215,
+    "lat": 26.2731,
+    "snap_km": 3.77,
+    "acc_cells": 928.0,
+    "area_km2": 65.6
+   },
+   {
+    "id": 7,
+    "name": "Nai Pakho",
+    "drains_to": "hamal",
+    "kind": "gauge",
+    "lon": 67.4328,
+    "lat": 26.5891,
+    "snap_km": 1.92,
+    "acc_cells": 104041.0,
+    "area_km2": 561.2
+   },
+   {
+    "id": 8,
+    "name": "Nai Ranjo",
+    "drains_to": "manchar",
+    "kind": "gauge",
+    "lon": 67.291,
+    "lat": 26.4912,
+    "snap_km": 0.38,
+    "acc_cells": 196.0,
+    "area_km2": 13.9
+   }
+  ]
+ },
  "arrival": {
   "width": 1792,
   "height": 2560,

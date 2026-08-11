@@ -147,6 +147,32 @@ reusing them elsewhere.
 
 ---
 
+## Nai sub-catchments
+
+Delineated from the DEM with the Sindh Irrigation Department's own gauging stations
+as pour points (Nai Gaj uses the dam axis). Nai Baran falls outside the AOI.
+
+| Nai | Catchment | Drains to | Gauge snap |
+|---|---|---|---|
+| Nai Gaj | 6,580 km² | manchar | 1.59 km |
+| Nai Bhan | 1,265 km² | manchar | 5.14 km |
+| Nai Pakho | 561 km² | hamal | 1.92 km |
+| Nai Dugdu | 200 km² | hamal | 3.22 km |
+| Nai Chandio | 123 km² | manchar | 0.6 km |
+| Nai Naig | 66 km² | manchar | 3.77 km |
+| Nai Khedro | 15 km² | hamal | 2.98 km |
+| Nai Ranjo | 14 km² | manchar | 0.38 km |
+
+**These are provisional.** The delineation is only as good as the pour-point
+coordinates, and the ones used here come from a schematic app rather than survey data
+— several gauges sat 3–5 km from any mapped channel and had to be snapped. Nai Gaj is
+the right order of magnitude for a major catchment; the sub-100 km² figures are almost
+certainly too small, meaning those gauges snapped onto a tributary rather than the
+main Nai. Accurate gauge coordinates, or the Department's own catchment boundaries,
+would replace this outright.
+
+---
+
 ## Known limitations
 
 - **VIIRS over-detects** relative to 10 m sensors by 1.3–1.7×. Use the high-resolution

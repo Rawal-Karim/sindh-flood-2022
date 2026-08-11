@@ -1,0 +1,65 @@
+[
+ {
+  "name": "Nai Naig",
+  "lat": 26.2731,
+  "lon": 67.4215,
+  "kind": "gauge",
+  "to": "manchar"
+ },
+ {
+  "name": "Nai Bhan",
+  "lat": 26.4182,
+  "lon": 67.551,
+  "kind": "gauge",
+  "to": "manchar"
+ },
+ {
+  "name": "Nai Pakho",
+  "lat": 26.5891,
+  "lon": 67.4328,
+  "kind": "gauge",
+  "to": "hamal"
+ },
+ {
+  "name": "Nai Dugdu",
+  "lat": 26.6945,
+  "lon": 67.3812,
+  "kind": "gauge",
+  "to": "hamal"
+ },
+ {
+  "name": "Nai Khedro",
+  "lat": 26.7914,
+  "lon": 67.345,
+  "kind": "gauge",
+  "to": "hamal"
+ },
+ {
+  "name": "Nai Gaj",
+  "lat": 26.8731,
+  "lon": 67.3182,
+  "kind": "dam axis",
+  "to": "manchar"
+ },
+ {
+  "name": "Nai Ranjo",
+  "lat": 26.4912,
+  "lon": 67.291,
+  "kind": "gauge",
+  "to": "manchar"
+ },
+ {
+  "name": "Nai Chandio",
+  "lat": 26.214,
+  "lon": 67.721,
+  "kind": "gauge",
+  "to": "manchar"
+ },
+ {
+  "name": "Nai Baran",
+  "lat": 25.4093,
+  "lon": 67.9426,
+  "kind": "gauge",
+  "to": "darawai"
+ }
+]

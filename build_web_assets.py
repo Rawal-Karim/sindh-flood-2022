@@ -144,6 +144,43 @@ noise = (noise - noise.min()) / np.ptp(noise)
 Image.fromarray((noise * 255).astype(np.uint8), mode="L").save(OUT / "noise.png")
 print(f"flow.png + noise.png written")
 
+# ── areal masks: lakes and Nai sub-catchments ───────────────────────────────
+# Baked as draped textures rather than drawn as outlines. THREE.LineBasicMaterial
+# ignores `linewidth` on WebGL, so every outline renders 1 px wide -- and Manchar is
+# only ~38 screen px across at the default camera, so a 1 px ring over blue flood
+# water was invisible. A filled mask reads at any zoom.
+from rasterio.features import rasterize as _rasterize
+import geopandas as _gpd
+
+lake_info = []
+lp = OUT / "lakes.geojson"
+if lp.exists():
+    lg = _gpd.read_file(lp).to_crs("EPSG:4326")
+    mask = _rasterize(((g, 255) for g in lg.geometry), out_shape=(GH, GW),
+                      transform=rasterio.transform.from_bounds(
+                          B.left, B.bottom, B.right, B.top, GW, GH),
+                      fill=0, dtype="uint8", all_touched=True)
+    Image.fromarray(mask, mode="L").save(OUT / "lakes_mask.png", optimize=True)
+    lake_info = [dict(name=r["name"], area_km2=r["area_km2"]) for _, r in lg.iterrows()]
+    print(f"lakes_mask.png: {int((mask > 0).sum()):,} cells")
+
+sub_info = {}
+sp = ROOT / "subcatchments.npy"
+mp = OUT / "subcatchments_meta.json"
+if sp.exists() and mp.exists():
+    lab = np.load(sp)
+    sub_info = json.loads(mp.read_text())
+    # R = catchment id, G = 255 on a boundary cell so the shader can draw an edge
+    edge = np.zeros_like(lab, bool)
+    edge[:-1, :] |= lab[:-1, :] != lab[1:, :]
+    edge[:, :-1] |= lab[:, :-1] != lab[:, 1:]
+    rgb = np.zeros((GH, GW, 3), np.uint8)
+    rgb[..., 0] = np.clip(lab, 0, 255).astype(np.uint8)
+    rgb[..., 1] = np.where(edge & (lab > 0), 255, 0)
+    Image.fromarray(rgb, mode="RGB").save(OUT / "subcatch.png", optimize=True)
+    print(f"subcatch.png: {sub_info['count']} catchments, "
+          f"{int((lab > 0).sum()):,} cells")
+
 # ── rainfall (CHIRPS) ───────────────────────────────────────────────────────
 # Drives the monsoon act: per-day scalars set rain intensity, cloud cover and light,
 # while the seasonal cumulative pattern darkens the ground where rain actually fell.
@@ -199,6 +236,8 @@ scene = dict(
     tracks=tracks,
     overlays=overlays,
     rain=rain,
+    lakes=lake_info,
+    subcatchments=sub_info,
     arrival=(json.loads((OUT / "arrival_meta.json").read_text())
              if (OUT / "arrival_meta.json").exists() else {}),
 )

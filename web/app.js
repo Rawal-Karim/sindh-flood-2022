@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '8';
+const BUILD = '9';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -83,6 +83,7 @@ function applyExag() {
   rebuildSkirt();
   redrapeOverlays();
   water.position.y = 0.35 * (EXAG / 14);
+  areaMesh.position.y = 0.45 * (EXAG / 14);
   envMesh.position.y = 0.30 * (EXAG / 14);
 }
 
@@ -345,6 +346,50 @@ terrain.material = terrainMat;
 
 const SKY_CLEAR = new THREE.Color(0xcfe4f3);
 const SKY_STORM = new THREE.Color(0x6b7683);
+
+
+// ── lakes and Nai sub-catchments (draped fills) ─────────────────────────────
+// Outlines are useless here: WebGL ignores LineBasicMaterial.linewidth, so every
+// boundary draws 1 px, and Manchar spans ~38 screen px at the default camera.
+const AREA_FRAG = `
+uniform sampler2D lakeMap, subMap;
+uniform float lakeOn, subOn;
+varying vec2 vUv;
+vec3 catColour(float id){
+  float h = fract(id * 0.2137);            // spread ids around the hue circle
+  vec3 k = vec3(1.0, 2.0/3.0, 1.0/3.0);
+  vec3 p = abs(fract(vec3(h) + k) * 6.0 - 3.0);
+  return clamp(p - 1.0, 0.0, 1.0);
+}
+void main(){
+  vec4 sub = texture2D(subMap, vUv);
+  float id = floor(sub.r * 255.0 + 0.5);
+  float edge = sub.g;
+  float lake = texture2D(lakeMap, vUv).r;
+
+  vec3 col = vec3(0.0);
+  float a = 0.0;
+  if (subOn > 0.5 && id > 0.5) {
+    col = catColour(id);
+    a = edge > 0.5 ? 0.85 : 0.26;          // solid rim, translucent interior
+  }
+  if (lakeOn > 0.5 && lake > 0.4) {
+    col = mix(col, vec3(0.02, 0.72, 0.80), 0.9);
+    a = max(a, 0.80);
+  }
+  if (a < 0.01) discard;
+  gl_FragColor = vec4(col, a);
+}`;
+const areaMat = new THREE.ShaderMaterial({
+  uniforms: { lakeMap: { value: dataTex(A('lakes_mask.png')) },
+              subMap: { value: dataTex(A('subcatch.png')) },
+              lakeOn: { value: 1 }, subOn: { value: 0 } },
+  vertexShader: WATER_VERT, fragmentShader: AREA_FRAG,
+  transparent: true, depthWrite: false,
+});
+const areaMesh = new THREE.Mesh(geo, areaMat);
+areaMesh.renderOrder = 4;
+scene.add(areaMesh);
 
 // ── overlays ────────────────────────────────────────────────────────────────
 const overlayGroup = new THREE.Group();
@@ -663,7 +708,8 @@ $('l-perm').addEventListener('change', e => { const o = overlayGroup.getObjectBy
 $('l-bund').addEventListener('change', e => { const o = overlayGroup.getObjectByName('bunds'); if (o) o.visible = e.target.checked; });
 $('l-prov').addEventListener('change', e => { const o = overlayGroup.getObjectByName('provinces'); if (o) o.visible = e.target.checked; });
 $('l-dist').addEventListener('change', e => { const o = overlayGroup.getObjectByName('districts'); if (o) o.visible = e.target.checked; });
-$('l-lakes').addEventListener('change', e => { const o = overlayGroup.getObjectByName('lakes'); if (o) o.visible = e.target.checked; });
+$('l-lakes').addEventListener('change', e => { areaMat.uniforms.lakeOn.value = e.target.checked ? 1 : 0; });
+$('l-sub').addEventListener('change', e => { areaMat.uniforms.subOn.value = e.target.checked ? 1 : 0; });
 $('l-cities').addEventListener('change', e => { const o = overlayGroup.getObjectByName('cities'); if (o) o.visible = e.target.checked; });
 $('l-breach').addEventListener('change', e => { const o = overlayGroup.getObjectByName('breach'); if (o) o.visible = e.target.checked; });
 $('l-torrent').addEventListener('change', e => { torrentsOn = e.target.checked; update(); });
