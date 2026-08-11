@@ -18,7 +18,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 
 .panel{position:absolute;background:rgba(255,255,255,.90);backdrop-filter:blur(10px);
   border:1px solid rgba(20,60,100,.16);border-radius:5px;padding:12px 14px;z-index:20}
-#hud{top:16px;left:16px;width:264px}
+#hud{top:84px;left:16px;width:264px}
 #hud h1{font-size:12.5px;font-weight:800;letter-spacing:1.1px;line-height:1.35;
   text-transform:uppercase}
 #hud .sub{font-size:9px;color:#4a6c88;letter-spacing:1.6px;margin-top:3px;
@@ -28,7 +28,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #srcline{font-size:9px;color:#5c7d99;margin-top:5px;line-height:1.55}
 #warn{font-size:9px;color:#a8631a;margin-top:6px;line-height:1.5;display:none}
 
-#ctl{bottom:16px;left:16px;right:16px;display:flex;align-items:center;gap:14px}
+/* timeline sits along the top so the map below it stays unobstructed */
+#ctl{top:12px;left:16px;right:16px;display:flex;align-items:center;gap:14px}
 #play{width:34px;height:34px;border:none;border-radius:50%;background:#12639f;
   color:#fff;font-size:13px;cursor:pointer;flex-shrink:0}
 #play:hover{background:#0d4f80}
@@ -59,7 +60,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 .lbl.big i{width:6px;height:6px;background:#b8341c}
 
 /* the layer list has outgrown the viewport; let it scroll rather than clip */
-#side{top:16px;right:16px;width:206px;max-height:calc(100vh - 108px);overflow-y:auto}
+#side{top:84px;right:16px;width:206px;max-height:calc(100vh - 168px);overflow-y:auto}
+#side-head{display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;user-select:none;font-size:8.5px;letter-spacing:2px;
+  text-transform:uppercase;color:#12639f;font-weight:700}
+#side-head .chev{transition:transform .2s;font-size:10px}
+#side.collapsed{max-height:none;overflow:visible}
+#side.collapsed #side-body{display:none}
+#side.collapsed #side-head .chev{transform:rotate(-90deg)}
 #side h3{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#12639f;
   margin-bottom:9px;font-weight:700;border-bottom:1px solid rgba(18,99,159,.2);
   padding-bottom:5px}
@@ -71,7 +79,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 .slab input[type=range]{flex:1;margin-left:8px;accent-color:#12639f}
 #valid{margin-top:11px;font-size:8.5px;color:#5c7d99;line-height:1.6}
 #valid b{color:#0d1f33}
-#legend{position:absolute;bottom:74px;right:16px;width:206px}
+#legend{position:absolute;bottom:16px;right:16px;width:206px}
 .lg{display:flex;align-items:center;font-size:9px;margin-bottom:5px}
 #pick-tip{position:absolute;display:none;z-index:40;pointer-events:none;
   background:rgba(12,26,44,.94);color:#eaf2fa;font-size:9.5px;line-height:1.5;
@@ -80,7 +88,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #pick-tip .t-lay{font-size:8px;letter-spacing:1.4px;text-transform:uppercase;
   color:#6fc2ef;margin-bottom:3px;font-weight:700}
 #pick-tip .t-hint{font-size:7.5px;color:#7f98ad;margin-top:4px;font-style:italic}
-#gizmo{position:absolute;bottom:74px;left:16px;width:74px;height:74px;z-index:20;
+/* On a narrow window the HUD and the collapsed layers chip would sit on top of each
+   other; shrink the HUD rather than let them overlap. */
+@media (max-width:780px){
+  #hud{width:calc(100vw - 250px);min-width:140px}
+  #hud h1{font-size:11px}
+  #date{font-size:20px}
+}
+#gizmo{position:absolute;bottom:16px;left:16px;width:74px;height:74px;z-index:20;
   pointer-events:none}
 </style>
 </head>
@@ -98,8 +113,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <div id="warn"></div>
 </div>
 
-<div class="panel" id="side">
-  <h3>Layers</h3>
+<div class="panel collapsed" id="side">
+  <div id="side-head"><span>Layers &amp; controls</span><span class="chev">&#9660;</span></div>
+  <div id="side-body">
   <label class="row"><input type="checkbox" id="l-water" checked><span class="sw" style="background:#1a78d8"></span>Flood water</label>
   <label class="row"><input type="checkbox" id="l-env"><span class="sw" style="background:#7a4fd0"></span>Peak extent envelope</label>
   <label class="row"><input type="checkbox" id="l-lakes" checked><span class="sw" style="background:#00b8c4"></span>Manchar &amp; Hamal lakes</label>
@@ -132,6 +148,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <div id="scen-count" style="font-size:8px;color:#5c7d99"></div>
   <div id="scen-note" style="display:none;font-size:8px;color:#a8631a;line-height:1.5;margin-top:4px">SRP-SID DSS max depth. Model covers the Indus right bank only — blank areas outside it are unmodelled, not dry.</div>
   <div id="valid"></div>
+  </div>
 </div>
 
 <div class="panel" id="legend">
@@ -160,6 +177,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=16"></script>
+<script type="module" src="./app.js?v=18"></script>
 </body>
 </html>
