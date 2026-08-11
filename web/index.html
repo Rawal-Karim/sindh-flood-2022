@@ -18,7 +18,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 
 .panel{position:absolute;background:rgba(255,255,255,.90);backdrop-filter:blur(10px);
   border:1px solid rgba(20,60,100,.16);border-radius:5px;padding:12px 14px;z-index:20}
-#hud{top:84px;left:16px;width:264px}
+#hud{top:70px;left:16px;width:264px}
 #hud h1{font-size:12.5px;font-weight:800;letter-spacing:1.1px;line-height:1.35;
   text-transform:uppercase}
 #hud .sub{font-size:9px;color:#4a6c88;letter-spacing:1.6px;margin-top:3px;
@@ -28,22 +28,41 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #srcline{font-size:9px;color:#5c7d99;margin-top:5px;line-height:1.55}
 #warn{font-size:9px;color:#a8631a;margin-top:6px;line-height:1.5;display:none}
 
-/* timeline sits along the top so the map below it stays unobstructed */
-#ctl{top:12px;left:16px;right:16px;display:flex;align-items:center;gap:14px}
-#play{width:34px;height:34px;border:none;border-radius:50%;background:#12639f;
-  color:#fff;font-size:13px;cursor:pointer;flex-shrink:0}
+/* Timeline: a slim translucent pill rather than a full-width opaque slab. The old
+   bar was 60 px of solid white spanning the whole window, most of it empty on the
+   right, which read as a browser chrome bar sitting on the map. */
+#ctl{top:14px;left:50%;transform:translateX(-50%);
+  width:min(860px, calc(100vw - 32px));
+  display:flex;align-items:center;gap:12px;
+  padding:8px 16px 6px;border-radius:22px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(14px) saturate(1.2);
+  border:1px solid rgba(20,60,100,.14);
+  box-shadow:0 4px 18px rgba(20,50,90,.12)}
+#play{width:28px;height:28px;border:none;border-radius:50%;background:#12639f;
+  color:#fff;font-size:10px;cursor:pointer;flex-shrink:0;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:background .15s}
 #play:hover{background:#0d4f80}
-#scrub{flex:1;min-width:0;accent-color:#12639f;cursor:pointer}
+/* custom track so the scrubber reads as a hairline, not a chunky OS control */
+#scrub{-webkit-appearance:none;appearance:none;background:transparent;
+  height:14px;cursor:pointer;margin:0}
+#scrub::-webkit-slider-runnable-track{height:3px;border-radius:2px;
+  background:linear-gradient(#c3d4e2,#c3d4e2)}
+#scrub::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:13px;height:13px;border-radius:50%;background:#12639f;margin-top:-5px;
+  border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+#scrub::-moz-range-track{height:3px;border-radius:2px;background:#c3d4e2}
+#scrub::-moz-range-thumb{width:11px;height:11px;border:2px solid #fff;
+  border-radius:50%;background:#12639f}
+#scrub::-moz-range-progress{height:3px;border-radius:2px;background:#12639f}
 #track-wrap{position:relative;flex:1;min-width:0}
 #track-wrap #scrub{width:100%;position:relative;z-index:2}
 /* the reconstructed stretch of the calendar, hatched to separate it from measurement */
-#pre-band{position:absolute;left:0;top:50%;transform:translateY(-50%);height:14px;
-  border-radius:3px;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(45deg,rgba(200,120,26,.20) 0 5px,
-    rgba(200,120,26,.07) 5px 10px);
-  border:1px solid rgba(200,120,26,.35)}
-#ticks{position:relative;height:12px;margin-top:1px;
-  pointer-events:none;font-size:8px;color:#5c7d99}
+#pre-band{position:absolute;left:0;top:7px;height:3px;border-radius:2px;
+  z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(45deg,rgba(196,116,26,.85) 0 4px,
+    rgba(196,116,26,.30) 4px 8px)}
+#ticks{position:relative;height:11px;margin-top:0;
+  pointer-events:none;font-size:7.5px;color:#6b8399;letter-spacing:.3px}
 #ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
 /* settlement labels — projected from 3-D each frame, so they need no layout flow */
 #labels{position:absolute;inset:0;z-index:15;pointer-events:none}
@@ -60,7 +79,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 .lbl.big i{width:6px;height:6px;background:#b8341c}
 
 /* the layer list has outgrown the viewport; let it scroll rather than clip */
-#side{top:84px;right:16px;width:206px;max-height:calc(100vh - 168px);overflow-y:auto}
+#side{top:70px;right:16px;width:206px;max-height:calc(100vh - 150px);overflow-y:auto}
 #side-head{display:flex;align-items:center;justify-content:space-between;
   cursor:pointer;user-select:none;font-size:8.5px;letter-spacing:2px;
   text-transform:uppercase;color:#12639f;font-weight:700}
@@ -177,6 +196,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=18"></script>
+<script type="module" src="./app.js?v=19"></script>
 </body>
 </html>

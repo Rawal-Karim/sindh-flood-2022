@@ -250,6 +250,30 @@ for name in ("bunds", "permanent_water", "breach_candidates_2022",
     elif (OUT / f"{name}.geojson").exists():
         overlays[name] = f"{name}.geojson"   # written directly by its own fetch script
 
+# ── clip every overlay to the terrain bounds ────────────────────────────────
+# Producers have drifted before: local_layers.py still carried the pre-review AOI, so
+# bunds reached 190 km south of the block and draped against a clamped edge height,
+# hanging in mid-air below the terrain. Clipping here catches it whatever the source,
+# and the target is the DEM's real bounds rather than aoi.py's declared values, since
+# tile snapping makes them slightly different.
+from shapely.geometry import box as _box
+_frame = _box(B.left, B.bottom, B.right, B.top)
+for name, fn in list(overlays.items()):
+    fp = OUT / fn
+    try:
+        g = _gpd.read_file(fp)
+    except Exception:
+        continue
+    outside = g[~g.geometry.within(_frame)]
+    if outside.empty:
+        continue
+    g = g[g.intersects(_frame)].copy()
+    g["geometry"] = g.geometry.intersection(_frame)
+    g = g[~g.geometry.is_empty]
+    g.to_file(fp, driver="GeoJSON")
+    print(f"  clipped {name}: {len(outside)} features reached outside the frame "
+          f"-> {len(g)} kept")
+
 scene = dict(
     mesh=dict(width=MESH_W, height=MESH_H),
     grid=dict(width=GW, height=GH),

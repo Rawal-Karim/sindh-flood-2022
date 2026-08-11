@@ -21,7 +21,8 @@ warnings.filterwarnings("ignore")
 
 HOME = Path("/Users/CCS-CREATIVE")
 OUT = Path("weblayers"); OUT.mkdir(exist_ok=True)
-W, S, E, N = 66.3, 24.6, 70.6, 29.6
+import sys; sys.path.insert(0, str(HOME / 'Documents/sindh_flood_sim'))
+from aoi import WEST as W, SOUTH as S, EAST as E, NORTH as N
 
 def dump(gdf, name, cols, tol=0.0):
     g = gdf.cx[W:E, S:N].copy()
