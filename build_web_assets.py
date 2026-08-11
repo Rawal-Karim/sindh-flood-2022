@@ -177,11 +177,14 @@ else:
 
 # ── overlays ────────────────────────────────────────────────────────────────
 overlays = {}
-for name in ("bunds", "permanent_water", "breach_candidates_2022"):
+for name in ("bunds", "permanent_water", "breach_candidates_2022",
+             "provinces", "districts", "cities", "lakes"):
     src_p = ROOT / "weblayers" / f"{name}.geojson"
     if src_p.exists():
         shutil.copy(src_p, OUT / f"{name}.geojson")
         overlays[name] = f"{name}.geojson"
+    elif (OUT / f"{name}.geojson").exists():
+        overlays[name] = f"{name}.geojson"   # written directly by its own fetch script
 
 scene = dict(
     mesh=dict(width=MESH_W, height=MESH_H),

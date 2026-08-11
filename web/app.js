@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '5';
+const BUILD = '8';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -464,10 +464,21 @@ async function loadOverlays() {
     addLines(await (await fetch(A(O.bunds))).json(), 0xc8452a, 2, 0.55, 'bunds');
   if (O.permanent_water)
     addLines(await (await fetch(A(O.permanent_water))).json(), 0x0b3c78, 2, 0.30, 'perm');
+  // Boundaries and areal features. addLines already walks Polygon/MultiPolygon rings,
+  // so these need no new machinery — drawn as draped outlines rather than filled, which
+  // keeps the flood layer readable underneath them.
+  if (O.provinces)
+    addLines(await (await fetch(A(O.provinces))).json(), 0x1b2f45, 3, 1.25, 'provinces');
+  if (O.districts)
+    addLines(await (await fetch(A(O.districts))).json(), 0x6b7c8c, 1, 0.95, 'districts');
+  if (O.lakes)
+    addLines(await (await fetch(A(O.lakes))).json(), 0x00b8c4, 3, 0.85, 'lakes');
+  if (O.cities)
+    addLines(await (await fetch(A(O.cities))).json(), 0x8e2b1a, 2, 0.75, 'cities');
   if (O.breach_candidates_2022) {
     const gj = await (await fetch(A(O.breach_candidates_2022))).json();
     // Magenta, not red: settlement dots are red, and these are a different kind of
-    // thing entirely — derived breach candidates from SAR change detection.
+    // thing entirely — 2022 breaching points.
     const mat = new THREE.MeshBasicMaterial({ color: 0xd400a0 });
     const sph = new THREE.SphereGeometry(2.0, 10, 8);
     const grp = new THREE.Group(); grp.name = 'breach';
@@ -650,6 +661,10 @@ $('l-flow').addEventListener('change', e => waterMat.uniforms.flowOn.value = e.t
 $('l-age').addEventListener('change', e => waterMat.uniforms.ageFade.value = e.target.checked ? 1 : 0);
 $('l-perm').addEventListener('change', e => { const o = overlayGroup.getObjectByName('perm'); if (o) o.visible = e.target.checked; });
 $('l-bund').addEventListener('change', e => { const o = overlayGroup.getObjectByName('bunds'); if (o) o.visible = e.target.checked; });
+$('l-prov').addEventListener('change', e => { const o = overlayGroup.getObjectByName('provinces'); if (o) o.visible = e.target.checked; });
+$('l-dist').addEventListener('change', e => { const o = overlayGroup.getObjectByName('districts'); if (o) o.visible = e.target.checked; });
+$('l-lakes').addEventListener('change', e => { const o = overlayGroup.getObjectByName('lakes'); if (o) o.visible = e.target.checked; });
+$('l-cities').addEventListener('change', e => { const o = overlayGroup.getObjectByName('cities'); if (o) o.visible = e.target.checked; });
 $('l-breach').addEventListener('change', e => { const o = overlayGroup.getObjectByName('breach'); if (o) o.visible = e.target.checked; });
 $('l-torrent').addEventListener('change', e => { torrentsOn = e.target.checked; update(); });
 $('l-cam').addEventListener('change', e => { autoCam = e.target.checked; });
@@ -687,6 +702,10 @@ function drawGizmo() {
 // ── run ─────────────────────────────────────────────────────────────────────
 await loadOverlays();
 await loadPlaces();
+for (const [n, on] of [['districts', false], ['cities', false]]) {
+  const o = overlayGroup.getObjectByName(n);
+  if (o) o.visible = on;
+}
 setTrack('viirs');
 applyExag();
 

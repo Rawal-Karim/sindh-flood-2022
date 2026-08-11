@@ -317,7 +317,11 @@
  "overlays": {
   "bunds": "bunds.geojson",
   "permanent_water": "permanent_water.geojson",
-  "breach_candidates_2022": "breach_candidates_2022.geojson"
+  "breach_candidates_2022": "breach_candidates_2022.geojson",
+  "provinces": "provinces.geojson",
+  "districts": "districts.geojson",
+  "cities": "cities.geojson",
+  "lakes": "lakes.geojson"
  },
  "rain": {
   "file": "wetness.png",

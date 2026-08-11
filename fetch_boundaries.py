@@ -39,12 +39,22 @@ def dump(gdf, name, cols, tol=0.0015):
     return g
 
 
+from shapely.geometry import box
+AOI_BOX = box(WEST, SOUTH, EAST, NORTH)
+
+
 def clipped(layer):
+    """Genuinely CLIP to the AOI, not just select.
+
+    .cx is only a bounding-box filter: it keeps whole polygons that touch the AOI, so
+    Balochistan arrives with its full extent. Those vertices then project outside the
+    terrain block and the draped line flies off into the sky, because heightAtLonLat
+    clamps at the mesh edge. Clipping keeps the geometry on the terrain.
+    """
     g = gpd.read_file(gdb, layer=layer).to_crs("EPSG:4326")
-    # .cx is a bounding-box filter, which keeps any province merely touching the AOI;
-    # that is what we want, so the boundary line runs to the frame edge rather than
-    # stopping where a polygon centroid happens to fall.
-    return g.cx[WEST:EAST, SOUTH:NORTH]
+    g = g[g.intersects(AOI_BOX)].copy()
+    g["geometry"] = g.geometry.intersection(AOI_BOX)
+    return g[~g.geometry.is_empty]
 
 
 prov = clipped("pak_admin1")
