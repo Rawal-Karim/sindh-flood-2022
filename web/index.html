@@ -16,17 +16,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #loading h1{font-size:15px;letter-spacing:4px;text-transform:uppercase;font-weight:800}
 #loading p{font-size:10px;letter-spacing:2px;color:#4a6c88;margin-top:8px}
 
-.panel{position:absolute;background:rgba(255,255,255,.90);backdrop-filter:blur(10px);
-  border:1px solid rgba(20,60,100,.16);border-radius:5px;padding:12px 14px;z-index:20}
+/* One surface treatment for every card, matched to the timeline pill: frosted and
+   translucent so the terrain stays readable underneath, rather than opaque boxes. */
+.panel{position:absolute;background:rgba(255,255,255,.72);
+  backdrop-filter:blur(14px) saturate(1.2);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2);
+  border:1px solid rgba(20,60,100,.12);border-radius:14px;
+  padding:13px 15px;z-index:20;
+  box-shadow:0 4px 18px rgba(20,50,90,.12)}
 #hud{top:70px;left:16px;width:264px}
-#hud h1{font-size:12.5px;font-weight:800;letter-spacing:1.1px;line-height:1.35;
-  text-transform:uppercase}
+#hud h1{font-size:11.5px;font-weight:800;letter-spacing:1px;line-height:1.4;
+  text-transform:uppercase;color:#12324d}
 #hud .sub{font-size:9px;color:#4a6c88;letter-spacing:1.6px;margin-top:3px;
   text-transform:uppercase}
-#date{font-size:26px;font-weight:800;margin-top:11px;line-height:1;letter-spacing:-.4px}
-#area{font-size:11px;color:#1462a5;font-weight:700;margin-top:5px}
-#srcline{font-size:9px;color:#5c7d99;margin-top:5px;line-height:1.55}
-#warn{font-size:9px;color:#a8631a;margin-top:6px;line-height:1.5;display:none}
+#date{font-size:27px;font-weight:800;margin-top:12px;line-height:1;
+  letter-spacing:-.6px;color:#0b1b2b}
+#area{display:inline-block;font-size:10.5px;color:#0d4f80;font-weight:700;
+  margin-top:8px;background:rgba(18,99,159,.10);border-radius:7px;padding:3px 9px}
+#srcline{font-size:8.5px;color:#5f7e97;margin-top:8px;line-height:1.65}
+#warn{font-size:8.5px;color:#9a5b12;margin-top:8px;line-height:1.55;display:none;
+  border-left:2px solid rgba(196,116,26,.55);padding-left:8px}
 
 /* Timeline: a slim translucent pill rather than a full-width opaque slab. The old
    bar was 60 px of solid white spanning the whole window, most of it empty on the
@@ -82,24 +91,34 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #side{top:70px;right:16px;width:206px;max-height:calc(100vh - 150px);overflow-y:auto}
 #side-head{display:flex;align-items:center;justify-content:space-between;
   cursor:pointer;user-select:none;font-size:8.5px;letter-spacing:2px;
-  text-transform:uppercase;color:#12639f;font-weight:700}
+  text-transform:uppercase;color:#12639f;font-weight:700;
+  padding:2px 2px;border-radius:6px;transition:color .12s}
+#side-head:hover{color:#0d4f80}
 #side-head .chev{transition:transform .2s;font-size:10px}
 #side.collapsed{max-height:none;overflow:visible}
 #side.collapsed #side-body{display:none}
 #side.collapsed #side-head .chev{transform:rotate(-90deg)}
-#side h3{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#12639f;
-  margin-bottom:9px;font-weight:700;border-bottom:1px solid rgba(18,99,159,.2);
-  padding-bottom:5px}
-.row{display:flex;align-items:center;font-size:10px;margin-bottom:7px;cursor:pointer;
-  user-select:none}
+#side h3{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7e97ac;
+  margin:0 0 7px;font-weight:700}
+#side-body{margin-top:10px}
+.row{display:flex;align-items:center;font-size:10px;margin-bottom:2px;cursor:pointer;
+  user-select:none;padding:3px 5px;border-radius:6px;transition:background .12s}
+.row:hover{background:rgba(18,99,159,.08)}
 .row input{margin-right:8px;accent-color:#12639f;cursor:pointer}
-.sw{width:15px;height:4px;border-radius:2px;margin-right:7px;flex-shrink:0}
+.sw{width:16px;height:5px;border-radius:3px;margin-right:8px;flex-shrink:0}
 .slab{display:flex;align-items:center;font-size:9px;color:#405f78;margin:9px 0 4px}
 .slab input[type=range]{flex:1;margin-left:8px;accent-color:#12639f}
+#scen-sel{width:100%;font-size:9.5px;padding:5px 6px;margin-bottom:5px;
+  border:1px solid rgba(20,60,100,.18);border-radius:7px;
+  background:rgba(255,255,255,.75);color:#0d1f33;cursor:pointer}
 #valid{margin-top:11px;font-size:8.5px;color:#5c7d99;line-height:1.6}
 #valid b{color:#0d1f33}
 #legend{position:absolute;bottom:16px;right:16px;width:206px}
-.lg{display:flex;align-items:center;font-size:9px;margin-bottom:5px}
+#legend h3{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7e97ac;
+  margin:0 0 9px;font-weight:700}
+#legend .sw{width:18px;height:6px;border-radius:3px}
+.lg{display:flex;align-items:center;font-size:9px;margin-bottom:6px;color:#40607a}
+.lg:last-child{margin-bottom:0}
 #pick-tip{position:absolute;display:none;z-index:40;pointer-events:none;
   background:rgba(12,26,44,.94);color:#eaf2fa;font-size:9.5px;line-height:1.5;
   padding:7px 10px;border-radius:5px;max-width:200px;
@@ -115,7 +134,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   #date{font-size:20px}
 }
 #gizmo{position:absolute;bottom:16px;left:16px;width:74px;height:74px;z-index:20;
-  pointer-events:none}
+  pointer-events:none;background:rgba(255,255,255,.62);
+  backdrop-filter:blur(12px) saturate(1.2);
+  -webkit-backdrop-filter:blur(12px) saturate(1.2);
+  border:1px solid rgba(20,60,100,.12);border-radius:50%;
+  box-shadow:0 3px 14px rgba(20,50,90,.11)}
 </style>
 </head>
 <body>
@@ -163,7 +186,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <div class="slab">Speed <input type="range" id="speed" min="0.25" max="4" step="0.25" value="1"></div>
 
   <h3 style="margin-top:13px">Modelled scenarios</h3>
-  <select id="scen-sel" style="width:100%;font-size:9.5px;padding:3px;margin-bottom:4px"></select>
+  <select id="scen-sel"></select>
   <div id="scen-count" style="font-size:8px;color:#5c7d99"></div>
   <div id="scen-note" style="display:none;font-size:8px;color:#a8631a;line-height:1.5;margin-top:4px">SRP-SID DSS max depth. Model covers the Indus right bank only — blank areas outside it are unmodelled, not dry.</div>
   <div id="valid"></div>
@@ -196,6 +219,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=19"></script>
+<script type="module" src="./app.js?v=20"></script>
 </body>
 </html>
