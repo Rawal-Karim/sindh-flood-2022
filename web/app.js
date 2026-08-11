@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '9';
+const BUILD = '11';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -391,6 +391,49 @@ const areaMesh = new THREE.Mesh(geo, areaMat);
 areaMesh.renderOrder = 4;
 scene.add(areaMesh);
 
+
+// ── modelled scenarios (SRP-SID DSS) ────────────────────────────────────────
+// 42 runs: 7 return periods x present/future climate x perfect/reduced-capacity/
+// breached embankments. Max-depth rasters pulled as georeferenced PNGs rendered into
+// this AOI's bbox, so they drape without reprojection. Outside the model's right-bank
+// AOI the PNG is transparent -- that is UNMODELLED, not dry.
+const SCEN = (S.scenarios && S.scenarios.scenarios) || [];
+const SCEN_FRAG = `
+uniform sampler2D scenMap;
+uniform float scenOn, scenOpacity;
+varying vec2 vUv;
+void main(){
+  if (scenOn < 0.5) discard;
+  vec4 c = texture2D(scenMap, vUv);
+  if (c.a < 0.05) discard;
+  gl_FragColor = vec4(c.rgb, c.a * scenOpacity);
+}`;
+const scenMat = new THREE.ShaderMaterial({
+  uniforms: { scenMap: { value: null }, scenOn: { value: 0 }, scenOpacity: { value: 0.88 } },
+  vertexShader: WATER_VERT, fragmentShader: SCEN_FRAG,
+  transparent: true, depthWrite: false,
+});
+const scenMesh = new THREE.Mesh(geo, scenMat);
+scenMesh.renderOrder = 5;
+scene.add(scenMesh);
+
+const scenTex = {};
+function showScenario(id) {
+  if (!id) { scenMat.uniforms.scenOn.value = 0; return; }
+  const s = SCEN.find(x => x.id === id);
+  if (!s) return;
+  if (!scenTex[id]) {
+    const t = texLoader.load(A(s.file));
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.generateMipmaps = false;
+    t.minFilter = THREE.LinearFilter;
+    t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+    scenTex[id] = t;
+  }
+  scenMat.uniforms.scenMap.value = scenTex[id];
+  scenMat.uniforms.scenOn.value = 1;
+}
+
 // ── overlays ────────────────────────────────────────────────────────────────
 const overlayGroup = new THREE.Group();
 scene.add(overlayGroup);
@@ -520,6 +563,12 @@ async function loadOverlays() {
     addLines(await (await fetch(A(O.lakes))).json(), 0x00b8c4, 3, 0.85, 'lakes');
   if (O.cities)
     addLines(await (await fetch(A(O.cities))).json(), 0x8e2b1a, 2, 0.75, 'cities');
+  if (O.canals)
+    addLines(await (await fetch(A(O.canals))).json(), 0x1f8fb0, 1, 0.55, 'canals');
+  if (O.drains)
+    addLines(await (await fetch(A(O.drains))).json(), 0x7a5cc0, 2, 0.60, 'drains');
+  if (O.srp_subcatchments)
+    addLines(await (await fetch(A(O.srp_subcatchments))).json(), 0xd4761a, 2, 1.05, 'srpsub');
   if (O.breach_candidates_2022) {
     const gj = await (await fetch(A(O.breach_candidates_2022))).json();
     // Magenta, not red: settlement dots are red, and these are a different kind of
@@ -709,6 +758,9 @@ $('l-bund').addEventListener('change', e => { const o = overlayGroup.getObjectBy
 $('l-prov').addEventListener('change', e => { const o = overlayGroup.getObjectByName('provinces'); if (o) o.visible = e.target.checked; });
 $('l-dist').addEventListener('change', e => { const o = overlayGroup.getObjectByName('districts'); if (o) o.visible = e.target.checked; });
 $('l-lakes').addEventListener('change', e => { areaMat.uniforms.lakeOn.value = e.target.checked ? 1 : 0; });
+$('l-canals').addEventListener('change', e => { const o = overlayGroup.getObjectByName('canals'); if (o) o.visible = e.target.checked; });
+$('l-drains').addEventListener('change', e => { const o = overlayGroup.getObjectByName('drains'); if (o) o.visible = e.target.checked; });
+$('l-srpsub').addEventListener('change', e => { const o = overlayGroup.getObjectByName('srpsub'); if (o) o.visible = e.target.checked; });
 $('l-sub').addEventListener('change', e => { areaMat.uniforms.subOn.value = e.target.checked ? 1 : 0; });
 $('l-cities').addEventListener('change', e => { const o = overlayGroup.getObjectByName('cities'); if (o) o.visible = e.target.checked; });
 $('l-breach').addEventListener('change', e => { const o = overlayGroup.getObjectByName('breach'); if (o) o.visible = e.target.checked; });
@@ -723,6 +775,24 @@ for (const r of document.querySelectorAll('input[name=trk]'))
 // Cross-validation figures stay in scene.json (S.cross_validation) and in the README;
 // they are just not shown in the panel.
 $('valid').innerHTML = `Peak envelope <b>${S.envelope_km2.toLocaleString()} km²</b>`;
+
+
+// scenario selector
+if (SCEN.length) {
+  const sel = $('scen-sel');
+  const rps = [...new Set(SCEN.map(s => s.return_period_yr))].sort((a, b) => a - b);
+  sel.innerHTML = '<option value="">— none —</option>' + SCEN
+    .sort((a, b) => a.return_period_yr - b.return_period_yr ||
+                    a.climate.localeCompare(b.climate) ||
+                    a.embankment.localeCompare(b.embankment))
+    .map(s => `<option value="${s.id}">${s.return_period_yr} yr · ${s.climate} · ${s.embankment}</option>`)
+    .join('');
+  sel.addEventListener('change', e => {
+    showScenario(e.target.value);
+    $('scen-note').style.display = e.target.value ? 'block' : 'none';
+  });
+  $('scen-count').textContent = `${SCEN.length} runs · ${rps.length} return periods`;
+}
 
 // ── orientation gizmo ───────────────────────────────────────────────────────
 const gz = $('gizmo').getContext('2d');
@@ -748,7 +818,8 @@ function drawGizmo() {
 // ── run ─────────────────────────────────────────────────────────────────────
 await loadOverlays();
 await loadPlaces();
-for (const [n, on] of [['districts', false], ['cities', false]]) {
+for (const [n, on] of [['districts', false], ['cities', false],
+                       ['canals', false], ['drains', false], ['srpsub', false]]) {
   const o = overlayGroup.getObjectByName(n);
   if (o) o.visible = on;
 }

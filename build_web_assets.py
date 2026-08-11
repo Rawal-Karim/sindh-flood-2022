@@ -215,7 +215,8 @@ else:
 # ── overlays ────────────────────────────────────────────────────────────────
 overlays = {}
 for name in ("bunds", "permanent_water", "breach_candidates_2022",
-             "provinces", "districts", "cities", "lakes"):
+             "provinces", "districts", "cities", "lakes",
+             "canals", "drains", "srp_subcatchments", "sindh_province"):
     src_p = ROOT / "weblayers" / f"{name}.geojson"
     if src_p.exists():
         shutil.copy(src_p, OUT / f"{name}.geojson")
@@ -236,6 +237,8 @@ scene = dict(
     tracks=tracks,
     overlays=overlays,
     rain=rain,
+    scenarios=(json.loads((OUT / "scenarios_index.json").read_text())
+               if (OUT / "scenarios_index.json").exists() else {}),
     lakes=lake_info,
     subcatchments=sub_info,
     arrival=(json.loads((OUT / "arrival_meta.json").read_text())

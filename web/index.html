@@ -58,7 +58,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 .lbl.big{font-size:12px;font-weight:800}
 .lbl.big i{width:6px;height:6px;background:#b8341c}
 
-#side{top:16px;right:16px;width:206px}
+/* the layer list has outgrown the viewport; let it scroll rather than clip */
+#side{top:16px;right:16px;width:206px;max-height:calc(100vh - 108px);overflow-y:auto}
 #side h3{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#12639f;
   margin-bottom:9px;font-weight:700;border-bottom:1px solid rgba(18,99,159,.2);
   padding-bottom:5px}
@@ -95,6 +96,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <label class="row"><input type="checkbox" id="l-water" checked><span class="sw" style="background:#1a78d8"></span>Flood water</label>
   <label class="row"><input type="checkbox" id="l-env"><span class="sw" style="background:#7a4fd0"></span>Peak extent envelope</label>
   <label class="row"><input type="checkbox" id="l-lakes" checked><span class="sw" style="background:#00b8c4"></span>Manchar &amp; Hamal lakes</label>
+  <label class="row"><input type="checkbox" id="l-canals"><span class="sw" style="background:#1f8fb0"></span>Canal network</label>
+  <label class="row"><input type="checkbox" id="l-drains"><span class="sw" style="background:#7a5cc0"></span>Drainage (RBOD/MNV)</label>
+  <label class="row"><input type="checkbox" id="l-srpsub"><span class="sw" style="background:#d4761a"></span>SRP sub-catchments</label>
   <label class="row"><input type="checkbox" id="l-sub"><span class="sw" style="background:#c86a2a"></span>Nai sub-catchments</label>
   <label class="row"><input type="checkbox" id="l-prov" checked><span class="sw" style="background:#1b2f45"></span>Provincial boundary</label>
   <label class="row"><input type="checkbox" id="l-dist"><span class="sw" style="background:#6b7c8c"></span>District boundaries</label>
@@ -116,6 +120,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <div class="slab">Relief <input type="range" id="exag" min="1" max="30" step="0.5" value="14"></div>
   <div class="slab">Speed <input type="range" id="speed" min="0.25" max="4" step="0.25" value="1"></div>
 
+  <h3 style="margin-top:13px">Modelled scenarios</h3>
+  <select id="scen-sel" style="width:100%;font-size:9.5px;padding:3px;margin-bottom:4px"></select>
+  <div id="scen-count" style="font-size:8px;color:#5c7d99"></div>
+  <div id="scen-note" style="display:none;font-size:8px;color:#a8631a;line-height:1.5;margin-top:4px">SRP-SID DSS max depth. Model covers the Indus right bank only — blank areas outside it are unmodelled, not dry.</div>
   <div id="valid"></div>
 </div>
 
@@ -145,6 +153,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=9"></script>
+<script type="module" src="./app.js?v=11"></script>
 </body>
 </html>

@@ -123,6 +123,7 @@ Scripts are ordered; each writes into `web/assets/`.
 | `local_layers.py` | Clips local GIS layers (bunds, permanent water, breach points) |
 | `fetch_boundaries.py` | Province and district boundaries from the HDX Pakistan COD-AB set |
 | `fetch_osm.py` | Manchar/Hamal lake polygons and built-up city extents from OpenStreetMap |
+| `fetch_srp.py` | SRP-SID DSS: canal network, drains, sub-catchments, 42 scenario rasters |
 | `build_web_assets.py` | Bakes terrain, textures, frames and manifest for the browser |
 
 Large intermediates are gitignored and regenerable — see `.gitignore`.
@@ -139,6 +140,7 @@ Large intermediates are gitignored and regenerable — see `.gitignore`.
 | Settlements | [GeoNames](https://www.geonames.org) | CC BY 4.0 |
 | Admin boundaries | [OCHA COD-AB via HDX](https://data.humdata.org/dataset/cod-ab-pak) | CC BY-IGO |
 | Lakes, city extents | [OpenStreetMap](https://www.openstreetmap.org) via Overpass | ODbL |
+| Canals, drains, sub-catchments, 42 modelled scenarios | SRP-SID DSS, Sindh Irrigation Dept | Departmental |
 | Renderer | [three.js](https://threejs.org) r169 | MIT |
 
 Bund alignments and 2022 breaching points are derived from Sindh Irrigation Department
