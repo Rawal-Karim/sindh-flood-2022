@@ -44,14 +44,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #ticks{position:relative;height:12px;margin-top:1px;
   pointer-events:none;font-size:8px;color:#5c7d99}
 #ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-/* sits above the control bar rather than top-centre, where it collided with the HUD */
-#badge{position:absolute;bottom:74px;left:50%;transform:translateX(-50%);
-  background:rgba(168,99,26,.94);color:#fff;font-size:10px;font-weight:700;
-  letter-spacing:.5px;padding:6px 16px;border-radius:5px;z-index:30;
-  opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;
-  box-shadow:0 2px 10px rgba(0,0,0,.18)}
-#badge.vis{opacity:1}
-
 /* settlement labels — projected from 3-D each frame, so they need no layout flow */
 #labels{position:absolute;inset:0;z-index:15;pointer-events:none}
 .lbl{position:absolute;top:0;left:0;display:none;white-space:nowrap;
@@ -131,8 +123,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <div class="lg"><span class="sw" style="background:#9aa8b4"></span>never observed</div>
 </div>
 
-<div id="badge">⚠ Reconstructed — CHIRPS rainfall + DEM-routed drainage. Not satellite-observed.</div>
-
 <div class="panel" id="ctl">
   <button id="play">❚❚</button>
   <div id="track-wrap">
@@ -150,6 +140,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=2"></script>
+<script type="module" src="./app.js?v=3"></script>
 </body>
 </html>

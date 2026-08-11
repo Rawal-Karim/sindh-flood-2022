@@ -597,7 +597,6 @@ function update() {
   }
 
   $('date').textContent = fmtDay(day);
-  $('badge').classList.toggle('vis', !observed);
 
   if (observed) {
     $('area').textContent = near.flood_km2.toLocaleString() + ' km² flooded';
