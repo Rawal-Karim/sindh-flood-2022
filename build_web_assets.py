@@ -25,12 +25,15 @@ ROOT = Path(__file__).parent
 OUT = ROOT / "web/assets"
 (OUT / "frames").mkdir(parents=True, exist_ok=True)
 
-MESH_W, MESH_H = 512, 670          # ~0.765 aspect, matches the raster grid
+MESH_W = 512                       # vertex columns; rows derived from the grid aspect
 TEX_MAX = 2048
 
 manifest = json.loads((ROOT / "composite/manifest.json").read_text())
 GW, GH = manifest["width"], manifest["height"]
 BLK = manifest["block"]
+# Keep vertex spacing near-isotropic: hardcoding rows meant an AOI change silently
+# left the mesh sampling the grid at different densities in x and y.
+MESH_H = int(round(MESH_W * GH / GW))
 
 with rasterio.open(ROOT / "dem_sindh_z10.tif") as src:
     dem_full = src.read(1).astype(np.float32)

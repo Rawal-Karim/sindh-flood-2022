@@ -3,6 +3,9 @@
 An interactive 3D reconstruction of the 2022 Indus flood across Sindh and south-east
 Balochistan, built on satellite-observed flood extents rather than a scripted animation.
 
+AOI: **66.09–70.66°E, 26.20–32.20°N** — the full Sulaiman Range in the north, with
+Qazi Ahmad (26.303°N) as the downstream limit.
+
 The timeline runs as one continuous calendar from **1 June 2022 to 28 February 2023**.
 Everything from 21 July onward is measured; the stretch before it is a reconstruction
 and is labelled as such on screen.
@@ -29,7 +32,7 @@ runs offline.
 
 ## What it shows
 
-**Terrain** — SRTM elevation over 66.09–70.66°E, 24.53–29.84°N, drawn as a solid block
+**Terrain** — SRTM elevation over the AOI, drawn as a solid block
 with a hypsometric and hillshade drape. Vertical exaggeration is adjustable and reads
 as a true multiplier, because world units are kilometres.
 
@@ -49,33 +52,34 @@ independently and cross-compared instead.
 
 | Date | Flooded |
 |---|---|
-| 21 Jul 2022 | 13,458 km² |
-| **31 Aug 2022** | **51,034 km² (peak)** |
-| 17 Oct 2022 | 24,992 km² |
-| 31 Dec 2022 | 10,464 km² |
-| 28 Feb 2023 | 4,413 km² |
+| 2022-07-21 | 9,750 km² |
+| **2022-08-31** | **38,462 km² (peak)** |
+| 2022-10-17 | 17,003 km² |
+| 2022-12-31 | 6,700 km² |
+| 2023-02-28 | 2,740 km² |
 
-Peak-extent envelope over the whole event: **56,428 km²**.
+Peak-extent envelope over the whole event: **42,049 km²**.
 
 **Cross-validation** — high-resolution vs VIIRS, inside each high-resolution footprint:
 
 | Date | Sensor | High-res | VIIRS | Ratio | IoU |
 |---|---|---|---|---|---|
-| 27 Aug | S1 | 9,745 km² | 16,643 km² | 1.71 | 0.451 |
-| 29 Aug | LS8 | 1,882 km² | 2,384 km² | 1.27 | 0.523 |
-| 31 Aug | S2 | 11,271 km² | 17,304 km² | 1.54 | 0.581 |
+| 08-27 | S1 | 8,887 km² | 13,644 km² | 1.54 | 0.508 |
+| 08-29 | LS8 | 1,845 km² | 2,345 km² | 1.27 | 0.523 |
+| 08-31 | S2 | 11,062 km² | 16,989 km² | 1.54 | 0.581 |
 
 ---
 
 ## Reconstructed vs observed
 
 The satellite record begins on 21 July 2022. The monsoon build-up and the hill-torrent
-response before that date are **reconstructed**, and the app says so with a persistent
-on-screen badge and a hatched band on the timeline.
+response before that date are **reconstructed**. The timeline marks that stretch with a
+hatched band, and the HUD names the inputs (CHIRPS rainfall, DEM-routed torrents)
+rather than a satellite.
 
 - **Rainfall is measured.** CHIRPS daily totals drive rain intensity, cloud shadow, sky
-  colour and ground wetness. Peak area-mean was 20.05 mm/day (24 Jul and 18 Aug 2022);
-  the wettest cell took 679 mm over the season.
+  colour and ground wetness. Peak area-mean was 17.22 mm/day (2022-07-06);
+  the wettest cells took ~568 mm over the season.
 - **Channel geometry is measured topography.** Nai channels are traced from the DEM by
   priority-flood depression filling, D8 flow routing and flow accumulation — not drawn
   by hand.
@@ -99,7 +103,8 @@ The satellite record is patchy, and the app is built not to paper over that:
 - **Stale readings fade.** Each frame carries a per-pixel age; a carried-forward
   reading is drawn progressively paler so it cannot be mistaken for a fresh
   measurement.
-- **Reconstruction is labelled**, continuously, for as long as it is on screen.
+- **Reconstruction is distinguished** from measurement on the timeline and in the HUD
+  source line, so a reader can tell which is which.
 
 ---
 
@@ -116,6 +121,7 @@ Scripts are ordered; each writes into `web/assets/`.
 | `flow_routing.py` | DEM flow routing → `arrival.png` (channels + arrival times) |
 | `fetch_places.py` | GeoNames settlements in frame → `places.json` |
 | `local_layers.py` | Clips local GIS layers (bunds, permanent water, breach points) |
+| `fetch_boundaries.py` | Province and district boundaries from the HDX Pakistan COD-AB set |
 | `build_web_assets.py` | Bakes terrain, textures, frames and manifest for the browser |
 
 Large intermediates are gitignored and regenerable — see `.gitignore`.
@@ -130,11 +136,12 @@ Large intermediates are gitignored and regenerable — see `.gitignore`.
 | Elevation | SRTM via [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | Public domain / ODbL for some sources |
 | Rainfall | [CHIRPS v2.0](https://www.chc.ucsb.edu/data/chirps), UC Santa Barbara | Public domain |
 | Settlements | [GeoNames](https://www.geonames.org) | CC BY 4.0 |
+| Admin boundaries | [OCHA COD-AB via HDX](https://data.humdata.org/dataset/cod-ab-pak) | CC BY-IGO |
 | Renderer | [three.js](https://threejs.org) r169 | MIT |
 
 Bund alignments and 2022 breach candidates are derived from Sindh Irrigation Department
-material and are included here for internal use. They are not open data — please do not
-redistribute them without departmental clearance.
+material and are published here at the Department's direction. Check with SID before
+reusing them elsewhere.
 
 ---
 

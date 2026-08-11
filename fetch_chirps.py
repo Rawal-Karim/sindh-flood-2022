@@ -16,15 +16,17 @@ import numpy as np
 import rasterio
 from rasterio.windows import from_bounds
 
+import sys; sys.path.insert(0, str(Path(__file__).parent))
+from aoi import WEST, SOUTH, EAST, NORTH
+
 ROOT = Path(__file__).parent
-CACHE = ROOT / "chirps_cache"; CACHE.mkdir(exist_ok=True)
+# Cache is keyed to the AOI, so a boundary change cannot silently reuse old clips.
+CACHE = ROOT / f"chirps_cache_{WEST}_{SOUTH}_{EAST}_{NORTH}"; CACHE.mkdir(exist_ok=True)
 
 START, END = date(2022, 6, 1), date(2022, 9, 30)
 URL = ("https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_daily/tifs/p05/"
        "{y}/chirps-v2.0.{y}.{m:02d}.{d:02d}.tif.gz")
 
-with rasterio.open(ROOT / "dem_sindh_z10.tif") as src:
-    B = src.bounds
 
 days = []
 d = START
@@ -48,7 +50,7 @@ def grab(d):
             if attempt == 3:
                 print(f"  FAILED {d}"); return d, None
     with rasterio.MemoryFile(raw) as mem, mem.open() as ds:
-        win = from_bounds(B.left, B.bottom, B.right, B.top, ds.transform)
+        win = from_bounds(WEST, SOUTH, EAST, NORTH, ds.transform)
         a = ds.read(1, window=win).astype(np.float32)
         a[a < 0] = 0.0                      # CHIRPS nodata is -9999
     np.save(dst, a)
@@ -73,5 +75,5 @@ print(f"stack {stack.shape}  max daily {stack.max():.0f} mm  "
 np.savez_compressed(ROOT / "chirps_frame.npz",
                     dates=np.array([d.isoformat() for d in got]),
                     rain=stack,
-                    bounds=np.array([B.left, B.bottom, B.right, B.top]))
+                    bounds=np.array([WEST, SOUTH, EAST, NORTH]))
 print(f"wrote chirps_frame.npz  ({(ROOT/'chirps_frame.npz').stat().st_size/1e6:.1f} MB)")

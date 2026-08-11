@@ -1,13 +1,13 @@
 {
- "width": 1664,
- "height": 2176,
+ "width": 1792,
+ "height": 2560,
  "bounds": [
-  66.09375,
-  24.5271348225978,
+  65.7421875,
+  26.115985925333522,
   70.6640625,
-  29.84064389983442
+  32.249974455863295
  ],
- "px_km2": 0.07341344867383279,
+ "px_km2": 0.07070266420101688,
  "block": 2,
  "max_window_days": 10,
  "water_class_keep": [
@@ -33,10 +33,10 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 9,
-    "flood_km2": 13458.3,
-    "this_pass_km2": 13458.3,
-    "footprint_km2": 229134.6,
-    "known_pct": 86.2,
+    "flood_km2": 9750.2,
+    "this_pass_km2": 9750.2,
+    "footprint_km2": 261941.6,
+    "known_pct": 80.8,
     "stale_pct": 0.0
    },
    {
@@ -47,9 +47,9 @@
     "res_m": 250,
     "region": "PAK",
     "window_days": 1,
-    "flood_km2": 33260.3,
-    "this_pass_km2": 33260.3,
-    "footprint_km2": 265820.1,
+    "flood_km2": 26940.6,
+    "this_pass_km2": 26940.6,
+    "footprint_km2": 324349.9,
     "known_pct": 100.0,
     "stale_pct": 0.0
    },
@@ -61,9 +61,9 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 51033.7,
-    "this_pass_km2": 51033.7,
-    "footprint_km2": 265820.1,
+    "flood_km2": 38462.4,
+    "this_pass_km2": 38462.4,
+    "footprint_km2": 324349.9,
     "known_pct": 100.0,
     "stale_pct": 0.0
    },
@@ -75,9 +75,9 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 46038.0,
-    "this_pass_km2": 46038.0,
-    "footprint_km2": 265820.1,
+    "flood_km2": 33563.4,
+    "this_pass_km2": 33563.4,
+    "footprint_km2": 324349.9,
     "known_pct": 100.0,
     "stale_pct": 0.0
    },
@@ -89,9 +89,9 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 41013.6,
-    "this_pass_km2": 41012.2,
-    "footprint_km2": 265426.8,
+    "flood_km2": 27668.3,
+    "this_pass_km2": 27664.2,
+    "footprint_km2": 322906.1,
     "known_pct": 100.0,
     "stale_pct": 0.0
    },
@@ -103,11 +103,11 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 31607.8,
-    "this_pass_km2": 31607.2,
-    "footprint_km2": 265523.5,
+    "flood_km2": 21078.8,
+    "this_pass_km2": 21077.6,
+    "footprint_km2": 322997.6,
     "known_pct": 100.0,
-    "stale_pct": 0.1
+    "stale_pct": 0.4
    },
    {
     "index": 6,
@@ -117,11 +117,11 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 27994.1,
-    "this_pass_km2": 27994.1,
-    "footprint_km2": 265489.3,
+    "flood_km2": 18747.9,
+    "this_pass_km2": 18747.2,
+    "footprint_km2": 322678.3,
     "known_pct": 100.0,
-    "stale_pct": 0.1
+    "stale_pct": 0.3
    },
    {
     "index": 7,
@@ -131,11 +131,11 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 24991.7,
-    "this_pass_km2": 24991.7,
-    "footprint_km2": 265379.5,
+    "flood_km2": 17002.6,
+    "this_pass_km2": 17001.9,
+    "footprint_km2": 322319.0,
     "known_pct": 100.0,
-    "stale_pct": 0.1
+    "stale_pct": 0.4
    },
    {
     "index": 8,
@@ -145,9 +145,9 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 16786.3,
-    "this_pass_km2": 16743.6,
-    "footprint_km2": 265356.7,
+    "flood_km2": 11747.7,
+    "this_pass_km2": 11706.0,
+    "footprint_km2": 323689.5,
     "known_pct": 100.0,
     "stale_pct": 0.2
    },
@@ -159,9 +159,9 @@
     "res_m": 375,
     "region": "Sindh_Balochistan",
     "window_days": 0,
-    "flood_km2": 12184.2,
-    "this_pass_km2": 4660.9,
-    "footprint_km2": 39562.6,
+    "flood_km2": 7232.3,
+    "this_pass_km2": 4578.1,
+    "footprint_km2": 38829.1,
     "known_pct": 100.0,
     "stale_pct": 0.2
    },
@@ -173,9 +173,9 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 6,
-    "flood_km2": 10463.7,
-    "this_pass_km2": 10463.7,
-    "footprint_km2": 265660.7,
+    "flood_km2": 6700.1,
+    "this_pass_km2": 6700.0,
+    "footprint_km2": 323892.7,
     "known_pct": 100.0,
     "stale_pct": 0.1
    },
@@ -187,11 +187,11 @@
     "res_m": 375,
     "region": "PAK",
     "window_days": 4,
-    "flood_km2": 4413.2,
-    "this_pass_km2": 4411.6,
-    "footprint_km2": 265454.3,
+    "flood_km2": 2739.8,
+    "this_pass_km2": 2738.2,
+    "footprint_km2": 323028.7,
     "known_pct": 100.0,
-    "stale_pct": 0.1
+    "stale_pct": 0.4
    }
   ],
   "highres": [
@@ -203,10 +203,10 @@
     "res_m": 10,
     "region": "Sindh",
     "window_days": 0,
-    "flood_km2": 2705.3,
-    "this_pass_km2": 2705.3,
-    "footprint_km2": 58356.1,
-    "known_pct": 22.0,
+    "flood_km2": 2430.3,
+    "this_pass_km2": 2430.3,
+    "footprint_km2": 45622.7,
+    "known_pct": 14.1,
     "stale_pct": 0.0
    },
    {
@@ -217,10 +217,10 @@
     "res_m": 10,
     "region": "SindhProvince",
     "window_days": 0,
-    "flood_km2": 2380.1,
-    "this_pass_km2": 1524.5,
-    "footprint_km2": 31052.0,
-    "known_pct": 22.0,
+    "flood_km2": 1984.1,
+    "this_pass_km2": 1165.4,
+    "footprint_km2": 21566.0,
+    "known_pct": 14.1,
     "stale_pct": 0.0
    },
    {
@@ -231,11 +231,11 @@
     "res_m": 10,
     "region": "Sindh_Balochistan",
     "window_days": 0,
-    "flood_km2": 10600.3,
-    "this_pass_km2": 9744.7,
-    "footprint_km2": 52978.6,
-    "known_pct": 30.2,
-    "stale_pct": 34.0
+    "flood_km2": 9705.7,
+    "this_pass_km2": 8887.0,
+    "footprint_km2": 30576.3,
+    "known_pct": 16.8,
+    "stale_pct": 44.0
    },
    {
     "index": 3,
@@ -245,11 +245,11 @@
     "res_m": 30,
     "region": "Punjab_Sindh",
     "window_days": 0,
-    "flood_km2": 12360.4,
-    "this_pass_km2": 1882.0,
-    "footprint_km2": 27877.4,
-    "known_pct": 40.2,
-    "stale_pct": 24.3
+    "flood_km2": 11431.0,
+    "this_pass_km2": 1845.3,
+    "footprint_km2": 27520.0,
+    "known_pct": 24.9,
+    "stale_pct": 28.1
    },
    {
     "index": 4,
@@ -259,11 +259,11 @@
     "res_m": 10,
     "region": "Sindh",
     "window_days": 0,
-    "flood_km2": 18162.4,
-    "this_pass_km2": 11270.9,
-    "footprint_km2": 25475.3,
-    "known_pct": 40.2,
-    "stale_pct": 10.5
+    "flood_km2": 17119.7,
+    "this_pass_km2": 11062.2,
+    "footprint_km2": 25011.9,
+    "known_pct": 24.9,
+    "stale_pct": 10.2
    }
   ]
  },
@@ -273,18 +273,18 @@
    "sensor": "S1",
    "viirs_date": "2022-08-28",
    "lag_days": 1,
-   "highres_km2": 9744.7,
-   "viirs_km2": 16642.7,
-   "ratio": 1.71,
-   "iou": 0.451
+   "highres_km2": 8887.0,
+   "viirs_km2": 13643.5,
+   "ratio": 1.54,
+   "iou": 0.508
   },
   {
    "highres_date": "2022-08-29",
    "sensor": "LS8",
    "viirs_date": "2022-08-28",
    "lag_days": -1,
-   "highres_km2": 1882.0,
-   "viirs_km2": 2384.2,
+   "highres_km2": 1845.3,
+   "viirs_km2": 2345.0,
    "ratio": 1.27,
    "iou": 0.523
   },
@@ -293,13 +293,13 @@
    "sensor": "S2",
    "viirs_date": "2022-08-31",
    "lag_days": 0,
-   "highres_km2": 11270.9,
-   "viirs_km2": 17303.5,
+   "highres_km2": 11062.2,
+   "viirs_km2": 16989.0,
    "ratio": 1.54,
    "iou": 0.581
   }
  ],
- "envelope_km2": 56428.0,
+ "envelope_km2": 42049.2,
  "envelope_sources": [
   "VIIRS 2022-08-03..2022-08-23 PAK",
   "VIIRS 2022-07-01..2022-08-31 PAK"

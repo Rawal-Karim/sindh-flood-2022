@@ -17,6 +17,7 @@ The channel geometry is real. The timing is a model, not an observation.
 """
 import json
 import heapq
+import re
 from pathlib import Path
 
 import numpy as np
@@ -73,8 +74,17 @@ def fill_depressions(z):
     return out
 
 
-print("filling depressions ...")
-zf = fill_depressions(dem)
+# The priority flood is pure-Python heapq over ~4.6M cells and dominates runtime, so
+# cache it against the grid size — tuning the catchment thresholds below should not
+# cost a full refill each time.
+FILL_CACHE = ROOT / f"_zfill_{GW}x{GH}.npy"
+if FILL_CACHE.exists():
+    zf = np.load(FILL_CACHE)
+    print(f"filled DEM from cache {FILL_CACHE.name}")
+else:
+    print("filling depressions ...")
+    zf = fill_depressions(dem)
+    np.save(FILL_CACHE, zf)
 print(f"  raised {(zf > dem + 1e-3).sum():,} cells, max {float((zf-dem).max()):.1f} m")
 
 
@@ -210,3 +220,104 @@ Image.fromarray(out, mode="RGB").save(ROOT / "web/assets/arrival.png", optimize=
     t_max_seconds=tmax, cell_m=[DX, DY],
     channel_cells=int(chan.sum())), indent=1))
 print("wrote web/assets/arrival.png + arrival_meta.json")
+
+
+# ── sub-catchments ──────────────────────────────────────────────────────────
+# Pour points are the cells where a mountain channel crosses out of dissected terrain
+# onto the plain. Labels then propagate upstream: a cell drains into its receiver, so
+# processing in ASCENDING elevation guarantees the receiver already carries a label
+# before the cell that feeds it is reached.
+@njit(cache=True)
+def label_upstream(rec, order_asc, pour_ids):
+    n = rec.size
+    lab = np.zeros(n, np.int32)
+    for k in range(n):
+        c = order_asc[k]
+        if pour_ids[c] > 0:
+            lab[c] = pour_ids[c]
+        else:
+            r = rec[c]
+            if r >= 0:
+                lab[c] = lab[r]
+    return lab
+
+
+
+# ── gazetteer streams (used both to place and to name the catchments) ───────
+stream_pts_all = []
+gn = ROOT / "geonames_PK.txt"
+if gn.exists():
+    for line in gn.read_text(encoding="utf8", errors="replace").split("\n"):
+        p = line.split("\t")
+        if len(p) < 15 or p[6] != "H" or p[7] not in ("STM", "STMI", "WAD", "STMX"):
+            continue
+        try:
+            lat, lon = float(p[4]), float(p[5])
+        except ValueError:
+            continue
+        if not (B.left <= lon <= B.right and B.bottom <= lat <= B.top):
+            continue
+        col = int((lon - B.left) / (B.right - B.left) * GW)
+        row = int((B.top - lat) / (B.top - B.bottom) * GH)
+        if 0 <= row < GH and 0 <= col < GW:
+            stream_pts_all.append((p[1], row, col))
+print(f"{len(stream_pts_all)} gazetteer stream points in AOI")
+
+# Pour points are the NAMED Nais themselves, not every channel exit.
+#
+# Deriving outlets from "where a channel leaves the dissected mask" does not work here.
+# The epsilon fill lays an artificial channel along the foot of the range that links
+# every Nai outlet into one trunk, so a single exit ends up owning the whole Kirthar --
+# measured at 47,502 km2 under one name, a third of the frame. Anchoring instead to
+# GeoNames stream points gives catchments that are named by construction and sized by
+# real drainage. Nesting resolves itself: a cell inherits its receiver's label, so the
+# innermost Nai downstream of it wins.
+recg = rec.ravel()
+accg = acc.ravel()
+SNAP = 6                     # cells searched around a gazetteer point for the channel
+
+# "nai" must be a WHOLE WORD. As a substring it matches Pashto names in the far
+# north of the AOI -- Kuchanai, Karkanai, Kamkai Sharanai -- which then dominated
+# the result with 10,000+ km2 catchments that are not hill torrents at all.
+NAI_RE = re.compile(r"\bnai\b", re.I)
+nai_pts = [(nm, r, c) for nm, r, c in stream_pts_all if NAI_RE.search(nm)]
+print(f"\n{len(nai_pts)} named Nai points in AOI")
+
+pour = np.zeros(GH * GW, np.int32)
+pour_meta = {}
+pid = 0
+for nm, row, col in sorted(nai_pts, key=lambda t: t[0]):
+    r0, r1 = max(row - SNAP, 0), min(row + SNAP + 1, GH)
+    c0, c1 = max(col - SNAP, 0), min(col + SNAP + 1, GW)
+    win = np.where(chan[r0:r1, c0:c1], acc[r0:r1, c0:c1], -1)
+    if win.max() <= 0:
+        continue             # gazetteer point is not near any mapped channel
+    dr, dc = np.unravel_index(int(win.argmax()), win.shape)
+    idx = (r0 + dr) * GW + (c0 + dc)
+    if pour[idx]:
+        continue             # another Nai already snapped to this exact cell
+    pid += 1
+    pour[idx] = pid
+    pour_meta[pid] = dict(name=nm, row=int(r0 + dr), col=int(c0 + dc),
+                          acc_cells=float(accg[idx]))
+print(f"{pid} Nai pour points snapped to channels (search radius {SNAP} cells)")
+
+order_asc = np.argsort(zf.ravel()).astype(np.int64)
+labels = label_upstream(recg, order_asc, pour).reshape(GH, GW)
+
+# Names come directly from the pour point each catchment was anchored to.
+names = {L: m["name"] for L, m in pour_meta.items()}
+
+areas = {int(L): float((labels == L).sum()) * DX * DY / 1e6 for L in range(1, pid + 1)}
+named = {L: n for L, n in names.items() if areas.get(L, 0) >= 25}
+print(f"{len(named)} catchments >= 25 km2 carry a GeoNames stream name")
+for L, n in sorted(named.items(), key=lambda kv: -areas[kv[0]])[:12]:
+    print(f"   {n[:30]:<31}{areas[L]:>8,.0f} km2")
+
+np.save(ROOT / "subcatchments.npy", labels.astype(np.int32))
+(ROOT / "web/assets/subcatchments_meta.json").write_text(json.dumps(dict(
+    count=pid, snap_cells=SNAP,
+    catchments=[dict(id=int(L), name=names.get(L), area_km2=round(areas[L], 1),
+                     acc_cells=pour_meta[L]["acc_cells"])
+                for L in range(1, pid + 1) if areas[L] >= 10]), indent=1))
+print("wrote subcatchments.npy + subcatchments_meta.json")

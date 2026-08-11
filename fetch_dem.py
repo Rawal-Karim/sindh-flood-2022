@@ -9,10 +9,8 @@ from PIL import Image
 import rasterio
 from rasterio.transform import from_bounds
 
-# Extent read off the reference map: Kirthar/Sulaiman front east to the Indus
-# left bank, Dera Bugti/Rajanpur in the north down to Kotri.
-W, S, E, N = 66.3, 24.6, 70.6, 29.6
-Z = 10
+from aoi import WEST as W, SOUTH as S, EAST as E, NORTH as N, DEM_ZOOM as Z, describe
+print(describe())
 
 def deg2tile(lon, lat, z):
     n = 2 ** z

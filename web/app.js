@@ -3,9 +3,16 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 
 const $ = id => document.getElementById(id);
 
+// Every asset URL carries the build stamp. The pipeline rewrites web/assets/ wholesale
+// whenever the AOI or the composite changes, and browsers happily serve the previous
+// scene.json against the same path — which shows up as correct-looking but stale
+// figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
+const BUILD = '5';
+const A = path => `./assets/${path}?b=${BUILD}`;
+
 // ── load ────────────────────────────────────────────────────────────────────
-const S = await (await fetch('./assets/scene.json')).json();
-const heights = new Float32Array(await (await fetch('./assets/terrain.bin')).arrayBuffer());
+const S = await (await fetch(A('scene.json'))).json();
+const heights = new Float32Array(await (await fetch(A('terrain.bin'))).arrayBuffer());
 
 const MW = S.mesh.width, MH = S.mesh.height;
 const { west, south, east, north } = S.bounds;
@@ -79,7 +86,7 @@ function applyExag() {
   envMesh.position.y = 0.30 * (EXAG / 14);
 }
 
-const terrainTex = new THREE.TextureLoader().load('./assets/terrain.jpg');
+const terrainTex = new THREE.TextureLoader().load(A('terrain.jpg'));
 terrainTex.colorSpace = THREE.SRGBColorSpace;
 terrainTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
 const terrain = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: terrainTex }));
@@ -187,8 +194,8 @@ const WATER_VERT = `
 varying vec2 vUv;
 void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
 
-const flowMap = dataTex('./assets/flow.png');
-const noiseMap = texLoader.load('./assets/noise.png');
+const flowMap = dataTex(A('flow.png'));
+const noiseMap = texLoader.load(A('noise.png'));
 noiseMap.colorSpace = THREE.NoColorSpace;
 noiseMap.wrapS = noiseMap.wrapT = THREE.RepeatWrapping;
 // The noise is already smooth, so skip the mip chain — mipmaps were averaging the
@@ -211,7 +218,7 @@ scene.add(water);
 // Same shader, purple, with flow and age fade off — the envelope is a maximum over a
 // date range, so it has neither an instantaneous surface nor a meaningful age.
 const envMat = new THREE.ShaderMaterial({
-  uniforms: { mapA: { value: dataTex('./assets/frames/envelope.png') },
+  uniforms: { mapA: { value: dataTex(A('frames/envelope.png')) },
               mapB: { value: null },
               flowMap: { value: flowMap }, noiseMap: { value: noiseMap },
               mixT: { value: 0 }, showUnobs: { value: 0 }, opacity: { value: 1 },
@@ -251,7 +258,7 @@ void main(){
   gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.95));
 }`;
 const torrentMat = new THREE.ShaderMaterial({
-  uniforms: { arrMap: { value: dataTex('./assets/arrival.png') },
+  uniforms: { arrMap: { value: dataTex(A('arrival.png')) },
               noiseMap: { value: noiseMap },
               uT: { value: 0 }, uOpacity: { value: 0 }, uTime: { value: 0 } },
   vertexShader: WATER_VERT, fragmentShader: TORRENT_FRAG,
@@ -316,7 +323,7 @@ fitVeil();
 // Wetness + drifting cloud shadow are folded into the terrain material. A cloud plane
 // above the terrain would slab across the oblique view; shadows on the ground read as
 // weather without occluding anything.
-const wetMap = dataTex('./assets/wetness.png');
+const wetMap = dataTex(A('wetness.png'));
 const terrainMat = new THREE.MeshLambertMaterial({ map: terrainTex });
 const wx = { uWet: { value: 0 }, uCloud: { value: 0 }, uTime: { value: 0 },
              wetMap: { value: wetMap }, noiseMap: { value: noiseMap } };
@@ -394,7 +401,7 @@ labelLayer.id = 'labels';
 document.body.appendChild(labelLayer);
 
 async function loadPlaces() {
-  const list = await (await fetch('./assets/places.json')).json();
+  const list = await (await fetch(A('places.json'))).json();
   places = list.map(p => {
     const el = document.createElement('div');
     el.className = 'lbl' + (p.pop >= 150000 ? ' big' : p.pop >= 40000 ? ' mid' : '');
@@ -454,11 +461,11 @@ const breachMarkers = [];
 async function loadOverlays() {
   const O = S.overlays;
   if (O.bunds)
-    addLines(await (await fetch('./assets/' + O.bunds)).json(), 0xc8452a, 2, 0.55, 'bunds');
+    addLines(await (await fetch(A(O.bunds))).json(), 0xc8452a, 2, 0.55, 'bunds');
   if (O.permanent_water)
-    addLines(await (await fetch('./assets/' + O.permanent_water)).json(), 0x0b3c78, 2, 0.30, 'perm');
+    addLines(await (await fetch(A(O.permanent_water))).json(), 0x0b3c78, 2, 0.30, 'perm');
   if (O.breach_candidates_2022) {
-    const gj = await (await fetch('./assets/' + O.breach_candidates_2022)).json();
+    const gj = await (await fetch(A(O.breach_candidates_2022))).json();
     // Magenta, not red: settlement dots are red, and these are a different kind of
     // thing entirely — derived breach candidates from SAR change detection.
     const mat = new THREE.MeshBasicMaterial({ color: 0xd400a0 });
@@ -519,7 +526,7 @@ const scrubToDay = u => u < PRE_SHARE
 function setTrack(name) {
   track = name;
   frames = S.tracks[name];
-  texes = frames.map(f => dataTex('./assets/' + f.file));
+  texes = frames.map(f => dataTex(A(f.file)));
   obsStart = dayOf(frames[0].date);
   obsEnd = dayOf(frames[frames.length - 1].date);
   buildTicks();

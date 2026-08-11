@@ -18,7 +18,7 @@ ROOT = Path(__file__).parent
 OUT = ROOT / "web/assets"
 CACHE = ROOT / "geonames_PK.txt"
 URL = "https://download.geonames.org/export/dump/PK.zip"
-W, S, E, N = 66.094, 24.527, 70.664, 29.841
+from aoi import WEST as W, SOUTH as S, EAST as E, NORTH as N
 MIN_POP = 15000
 
 # gazetteer spelling -> label shown on the map
