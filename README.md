@@ -93,6 +93,21 @@ convincing and means nothing. The plain is left to the observed data.
 
 ---
 
+## Interaction
+
+Hovering the terrain identifies whatever layer feature is under the cursor and shows its
+attributes; clicking flies the camera to frame that feature.
+
+Picking is done in lon/lat rather than by raycasting the line geometry. Each layer is a
+single merged `LineSegments`, so a geometry hit cannot be traced back to a feature, and
+raycasting 1 px lines is unreliable anyway. Instead the terrain is raycast for a ground
+point, converted to lon/lat, and features are tested by bounding box then by precise
+point-in-polygon or distance-to-segment. A line hit always beats a polygon hit — scoring
+them together compares a distance in degrees against an area in square degrees, which
+once let a 41,000 km² sub-catchment outrank a canal directly under the cursor.
+
+---
+
 ## Honesty in the rendering
 
 The satellite record is patchy, and the app is built not to paper over that:
@@ -138,7 +153,8 @@ Large intermediates are gitignored and regenerable — see `.gitignore`.
 | Elevation | SRTM via [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | Public domain / ODbL for some sources |
 | Rainfall | [CHIRPS v2.0](https://www.chc.ucsb.edu/data/chirps), UC Santa Barbara | Public domain |
 | Settlements | [GeoNames](https://www.geonames.org) | CC BY 4.0 |
-| Admin boundaries | [OCHA COD-AB via HDX](https://data.humdata.org/dataset/cod-ab-pak) | CC BY-IGO |
+| District boundaries | [OCHA COD-AB via HDX](https://data.humdata.org/dataset/cod-ab-pak) | CC BY-IGO |
+| Provincial boundary | SRP-SID DSS `results:sindh_province` (SID's own) | Departmental |
 | Lakes, city extents | [OpenStreetMap](https://www.openstreetmap.org) via Overpass | ODbL |
 | Canals, drains, sub-catchments, 42 modelled scenarios | SRP-SID DSS, Sindh Irrigation Dept | Departmental |
 | Renderer | [three.js](https://threejs.org) r169 | MIT |

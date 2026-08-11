@@ -73,6 +73,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #valid b{color:#0d1f33}
 #legend{position:absolute;bottom:74px;right:16px;width:206px}
 .lg{display:flex;align-items:center;font-size:9px;margin-bottom:5px}
+#pick-tip{position:absolute;display:none;z-index:40;pointer-events:none;
+  background:rgba(12,26,44,.94);color:#eaf2fa;font-size:9.5px;line-height:1.5;
+  padding:7px 10px;border-radius:5px;max-width:200px;
+  box-shadow:0 3px 12px rgba(0,0,0,.28)}
+#pick-tip .t-lay{font-size:8px;letter-spacing:1.4px;text-transform:uppercase;
+  color:#6fc2ef;margin-bottom:3px;font-weight:700}
+#pick-tip .t-hint{font-size:7.5px;color:#7f98ad;margin-top:4px;font-style:italic}
 #gizmo{position:absolute;bottom:74px;left:16px;width:74px;height:74px;z-index:20;
   pointer-events:none}
 </style>
@@ -153,6 +160,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=11"></script>
+<script type="module" src="./app.js?v=15"></script>
 </body>
 </html>

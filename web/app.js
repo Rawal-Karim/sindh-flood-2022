@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '11';
+const BUILD = '15';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -437,16 +437,27 @@ function showScenario(id) {
 // ── overlays ────────────────────────────────────────────────────────────────
 const overlayGroup = new THREE.Group();
 scene.add(overlayGroup);
-const overlaySpecs = [];   // {obj, coords:[[lon,lat]...][], lift}
+const overlaySpecs = [];   // {obj, paths, lift}
+const PICK = [];           // per-layer feature registry for hover/click picking
 
-function addLines(geojson, color, width, lift, name) {
+function addLines(geojson, color, width, lift, name, label) {
   const paths = [];
+  const feats = [];
   for (const f of geojson.features) {
     const g = f.geometry; if (!g) continue;
-    if (g.type === 'LineString') paths.push(g.coordinates);
-    else if (g.type === 'MultiLineString') paths.push(...g.coordinates);
-    else if (g.type === 'Polygon') paths.push(...g.coordinates);
-    else if (g.type === 'MultiPolygon') for (const p of g.coordinates) paths.push(...p);
+    let parts = [], isPoly = false;
+    if (g.type === 'LineString') parts = [g.coordinates];
+    else if (g.type === 'MultiLineString') parts = g.coordinates;
+    else if (g.type === 'Polygon') { parts = g.coordinates; isPoly = true; }
+    else if (g.type === 'MultiPolygon') { for (const p of g.coordinates) parts.push(...p); isPoly = true; }
+    if (!parts.length) continue;
+    paths.push(...parts);
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (const pa of parts) for (const c of pa) {
+      if (c[0] < x0) x0 = c[0]; if (c[0] > x1) x1 = c[0];
+      if (c[1] < y0) y0 = c[1]; if (c[1] > y1) y1 = c[1];
+    }
+    feats.push({ props: f.properties || {}, parts, isPoly, bbox: [x0, y0, x1, y1] });
   }
   const obj = new THREE.LineSegments(
     new THREE.BufferGeometry(),
@@ -455,6 +466,7 @@ function addLines(geojson, color, width, lift, name) {
   obj.renderOrder = 3;
   overlayGroup.add(obj);
   overlaySpecs.push({ obj, paths, lift });
+  PICK.push({ name, label: label || name, color, feats, obj });
   return obj;
 }
 
@@ -549,26 +561,32 @@ const breachMarkers = [];
 async function loadOverlays() {
   const O = S.overlays;
   if (O.bunds)
-    addLines(await (await fetch(A(O.bunds))).json(), 0xc8452a, 2, 0.55, 'bunds');
+    addLines(await (await fetch(A(O.bunds))).json(), 0xc8452a, 2, 0.55, 'bunds', 'Flood bund');
   if (O.permanent_water)
-    addLines(await (await fetch(A(O.permanent_water))).json(), 0x0b3c78, 2, 0.30, 'perm');
+    addLines(await (await fetch(A(O.permanent_water))).json(), 0x0b3c78, 2, 0.30, 'perm', 'Permanent water');
   // Boundaries and areal features. addLines already walks Polygon/MultiPolygon rings,
   // so these need no new machinery — drawn as draped outlines rather than filled, which
   // keeps the flood layer readable underneath them.
-  if (O.provinces)
-    addLines(await (await fetch(A(O.provinces))).json(), 0x1b2f45, 3, 1.25, 'provinces');
+  // SID's own provincial boundary, so this matches the Department's other outputs.
+  // COD-AB (O.provinces) is still built and remains available as a cross-check.
+  if (O.sindh_province)
+    addLines(await (await fetch(A(O.sindh_province))).json(), 0x1b2f45, 3, 1.25,
+             'provinces', 'Provincial boundary (SID)');
+  else if (O.provinces)
+    addLines(await (await fetch(A(O.provinces))).json(), 0x1b2f45, 3, 1.25,
+             'provinces', 'Provincial boundary (COD-AB)');
   if (O.districts)
-    addLines(await (await fetch(A(O.districts))).json(), 0x6b7c8c, 1, 0.95, 'districts');
+    addLines(await (await fetch(A(O.districts))).json(), 0x6b7c8c, 1, 0.95, 'districts', 'District');
   if (O.lakes)
-    addLines(await (await fetch(A(O.lakes))).json(), 0x00b8c4, 3, 0.85, 'lakes');
+    addLines(await (await fetch(A(O.lakes))).json(), 0x00b8c4, 3, 0.85, 'lakes', 'Lake');
   if (O.cities)
-    addLines(await (await fetch(A(O.cities))).json(), 0x8e2b1a, 2, 0.75, 'cities');
+    addLines(await (await fetch(A(O.cities))).json(), 0x8e2b1a, 2, 0.75, 'cities', 'City extent');
   if (O.canals)
-    addLines(await (await fetch(A(O.canals))).json(), 0x1f8fb0, 1, 0.55, 'canals');
+    addLines(await (await fetch(A(O.canals))).json(), 0x1f8fb0, 1, 0.55, 'canals', 'Canal');
   if (O.drains)
-    addLines(await (await fetch(A(O.drains))).json(), 0x7a5cc0, 2, 0.60, 'drains');
+    addLines(await (await fetch(A(O.drains))).json(), 0x7a5cc0, 2, 0.60, 'drains', 'Drain');
   if (O.srp_subcatchments)
-    addLines(await (await fetch(A(O.srp_subcatchments))).json(), 0xd4761a, 2, 1.05, 'srpsub');
+    addLines(await (await fetch(A(O.srp_subcatchments))).json(), 0xd4761a, 2, 1.05, 'srpsub', 'SRP sub-catchment');
   if (O.breach_candidates_2022) {
     const gj = await (await fetch(A(O.breach_candidates_2022))).json();
     // Magenta, not red: settlement dots are red, and these are a different kind of
@@ -587,6 +605,161 @@ async function loadOverlays() {
     overlayGroup.add(grp);
   }
 }
+
+
+// ── hover / click picking ───────────────────────────────────────────────────
+// Picking is done in lon/lat, not by raycasting the line geometry. Every layer is a
+// single merged LineSegments, so a geometry hit cannot be traced back to a feature;
+// and raycasting 1 px lines is fiddly anyway. Instead: raycast the terrain to get a
+// ground point, convert to lon/lat, then test features by bbox and precise geometry.
+const lonOfX = x => west + (x + WIDTH_KM / 2) / WIDTH_KM * (east - west);
+const latOfZ = z => north - (z + DEPTH_KM / 2) / DEPTH_KM * (north - south);
+
+const ray = new THREE.Raycaster();
+const ptr = new THREE.Vector2();
+const tip = document.createElement('div');
+tip.id = 'pick-tip';
+document.body.appendChild(tip);
+
+const hlMat = new THREE.LineBasicMaterial({ color: 0xffd23f, transparent: true, opacity: 1 });
+let hlObj = null, hovered = null;
+
+function pointInRing(x, y, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+
+function distToParts(x, y, parts) {
+  let best = Infinity;
+  for (const pa of parts) {
+    for (let i = 0; i < pa.length - 1; i++) {
+      const ax = pa[i][0], ay = pa[i][1], bx = pa[i + 1][0], by = pa[i + 1][1];
+      const dx = bx - ax, dy = by - ay;
+      const L = dx * dx + dy * dy;
+      let t = L ? ((x - ax) * dx + (y - ay) * dy) / L : 0;
+      t = t < 0 ? 0 : t > 1 ? 1 : t;
+      const ex = x - (ax + t * dx), ey = y - (ay + t * dy);
+      const d = ex * ex + ey * ey;
+      if (d < best) best = d;
+    }
+  }
+  return Math.sqrt(best);
+}
+
+function featureAt(lon, lat, tolDeg) {
+  // A line hit always beats a polygon hit. Scoring them in one variable compares a
+  // distance in degrees against an area in square degrees, which is meaningless — it
+  // let a 41,000 km2 sub-catchment outrank a canal directly under the cursor.
+  let bestLine = null, bestLineD = Infinity;
+  let bestPoly = null, bestPolyA = Infinity;
+  for (const layer of PICK) {
+    if (!layer.obj.visible) continue;
+    for (const f of layer.feats) {
+      const [x0, y0, x1, y1] = f.bbox;
+      if (lon < x0 - tolDeg || lon > x1 + tolDeg ||
+          lat < y0 - tolDeg || lat > y1 + tolDeg) continue;
+      const d = distToParts(lon, lat, f.parts);
+      if (d < tolDeg && d < bestLineD) { bestLineD = d; bestLine = { layer, f }; }
+      if (f.isPoly) {
+        let inside = false;
+        for (const ring of f.parts) if (pointInRing(lon, lat, ring)) inside = !inside;
+        if (inside) {
+          const area = (x1 - x0) * (y1 - y0);      // tightest containing polygon wins
+          if (area < bestPolyA) { bestPolyA = area; bestPoly = { layer, f }; }
+        }
+      }
+    }
+  }
+  return bestLine || bestPoly;
+}
+
+function clearHighlight() {
+  if (hlObj) { overlayGroup.remove(hlObj); hlObj.geometry.dispose(); hlObj = null; }
+}
+
+function highlight(f) {
+  clearHighlight();
+  const v = [];
+  for (const pa of f.parts)
+    for (let i = 0; i < pa.length - 1; i++)
+      for (const c of [pa[i], pa[i + 1]])
+        v.push(lonToX(c[0]), yOf(heightAtLonLat(c[0], c[1])) + 2.4 * (EXAG / 14), latToZ(c[1]));
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3));
+  hlObj = new THREE.LineSegments(g, hlMat);
+  hlObj.renderOrder = 9;
+  overlayGroup.add(hlObj);
+}
+
+const NICE = { name: 'Name', Name: 'Name', adm2_name: 'District', adm1_name: 'Province',
+               P_Name: 'Province', code: 'Code', bund_name: 'Bund', Model_Name: 'Model',
+               area_km2: 'Area (km²)', Area: 'Area (km²)', pop: 'Population',
+               NAME: 'Name', osm_name: 'OSM name' };
+
+function showTip(hit, px, py) {
+  // The canal layer's `descriptio` is a raw KML blob with embedded markup and repeated
+  // NAME/TYPE pairs — strip tags, collapse whitespace and cap it, or the popup
+  // becomes a wall of text.
+  const clean = v => {
+    if (typeof v === 'number') return v.toLocaleString();
+    const t = String(v).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return t.length > 60 ? t.slice(0, 60) + '…' : t;
+  };
+  const rows = Object.entries(hit.f.props)
+    .filter(([k, v]) => v !== null && v !== '' && NICE[k] && clean(v))
+    .slice(0, 4)
+    .map(([k, v]) => `<div><b>${NICE[k]}:</b> ${clean(v)}</div>`)
+    .join('');
+  tip.innerHTML = `<div class="t-lay">${hit.layer.label}</div>${rows || '<div>—</div>'}` +
+                  `<div class="t-hint">click to zoom</div>`;
+  tip.style.display = 'block';
+  tip.style.left = Math.min(px + 14, innerWidth - 210) + 'px';
+  tip.style.top = Math.min(py + 14, innerHeight - 90) + 'px';
+}
+
+let lastPick = 0;
+renderer.domElement.addEventListener('pointermove', e => {
+  const now = performance.now();
+  if (now - lastPick < 40) return;          // picking is O(features); throttle it
+  lastPick = now;
+  ptr.x = (e.clientX / innerWidth) * 2 - 1;
+  ptr.y = -(e.clientY / innerHeight) * 2 + 1;
+  ray.setFromCamera(ptr, camera);
+  const hit = ray.intersectObject(terrain, false)[0];
+  if (!hit) { tip.style.display = 'none'; clearHighlight(); hovered = null; return; }
+  const lon = lonOfX(hit.point.x), lat = latOfZ(hit.point.z);
+  // tolerance scales with camera distance so thin lines stay grabbable when zoomed out
+  const tol = Math.max(0.01, camera.position.distanceTo(controls.target) / 1000 * 0.05);
+  const f = featureAt(lon, lat, tol);
+  if (!f) { tip.style.display = 'none'; clearHighlight(); hovered = null; return; }
+  if (f.f !== hovered) { hovered = f.f; highlight(f.f); }
+  showTip(f, e.clientX, e.clientY);
+});
+
+renderer.domElement.addEventListener('pointerleave', () => {
+  tip.style.display = 'none'; clearHighlight(); hovered = null;
+});
+
+// click -> frame the feature
+let flight = null;
+renderer.domElement.addEventListener('click', e => {
+  if (!hovered) return;
+  const [x0, y0, x1, y1] = hovered.bbox;
+  const cLon = (x0 + x1) / 2, cLat = (y0 + y1) / 2;
+  const wKm = (x1 - x0) * 111.32 * Math.cos(cLat * Math.PI / 180);
+  const hKm = (y1 - y0) * 110.54;
+  const span = Math.max(wKm, hKm, 8);
+  const dist = Math.max(span * 1.9, 45);
+  const tgt = new THREE.Vector3(lonToX(cLon), yOf(heightAtLonLat(cLon, cLat)), latToZ(cLat));
+  const pos = tgt.clone().add(new THREE.Vector3(-dist * 0.45, dist * 0.75, dist * 0.75));
+  autoCam = false; $('l-cam').checked = false;
+  flight = { t: 0, fromP: camera.position.clone(), fromT: controls.target.clone(),
+             toP: pos, toT: tgt };
+});
 
 // ── timeline ────────────────────────────────────────────────────────────────
 // One continuous calendar from 1 Jun 2022 to the last satellite frame. The stretch
@@ -869,7 +1042,14 @@ renderer.setAnimationLoop(now => {
     if (tNorm >= 1) { tNorm = 1; playing = false; $('play').textContent = '▶'; }
     update();
   }
-  if (autoCam) {
+  if (flight) {
+    flight.t = Math.min(flight.t + dt / 0.9, 1);
+    const k = flight.t < 0.5 ? 2 * flight.t * flight.t
+                             : 1 - Math.pow(-2 * flight.t + 2, 2) / 2;
+    camera.position.lerpVectors(flight.fromP, flight.toP, k);
+    controls.target.lerpVectors(flight.fromT, flight.toT, k);
+    if (flight.t >= 1) flight = null;
+  } else if (autoCam) {
     cameraFor(tNorm);
     camera.position.lerp(_p, 1 - Math.pow(0.006, dt));
     controls.target.lerp(_t, 1 - Math.pow(0.006, dt));
