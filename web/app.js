@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '23';
+const BUILD = '24';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -1032,7 +1032,24 @@ if (SCEN.length) {
   $('scen-count').textContent = `${SCEN.length} runs · ${rps.length} return periods`;
 }
 
-$('side-head').addEventListener('click', () => $('side').classList.toggle('collapsed'));
+// Cap the layers panel so it stops above the legend instead of running behind it.
+// Measured rather than hardcoded, so it stays correct if the legend gains a row or
+// the window is short; skipped when the legend is hidden (phone layout).
+function fitSidePanel() {
+  const side = $('side'), legend = $('legend');
+  if (getComputedStyle(legend).display === 'none' || side.classList.contains('collapsed')) {
+    side.style.maxHeight = '';
+    return;
+  }
+  const gap = 14;
+  const avail = legend.getBoundingClientRect().top - side.getBoundingClientRect().top - gap;
+  side.style.maxHeight = Math.max(140, avail) + 'px';
+}
+
+$('side-head').addEventListener('click', () => {
+  $('side').classList.toggle('collapsed');
+  fitSidePanel();
+});
 
 // ── orientation gizmo ───────────────────────────────────────────────────────
 const gz = $('gizmo').getContext('2d');
@@ -1078,6 +1095,7 @@ addEventListener('resize', () => {
   renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 820 ? 1.5 : 2));
   updateCamScale();
   fitVeil();
+  fitSidePanel();
 });
 
 // Scripted camera: in close on the Kirthar front while the rain builds and the
@@ -1135,4 +1153,5 @@ renderer.setAnimationLoop(now => {
   renderer.render(scene, camera);
 });
 
+fitSidePanel();
 $('loading').classList.add('done');

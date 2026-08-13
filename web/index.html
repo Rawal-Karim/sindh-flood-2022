@@ -90,8 +90,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 .lbl.big{font-size:12px;font-weight:800}
 .lbl.big i{width:6px;height:6px;background:#b8341c}
 
-/* the layer list has outgrown the viewport; let it scroll rather than clip */
-#side{top:70px;right:16px;width:206px;max-height:calc(100vh - 150px);overflow-y:auto}
+/* The layer list scrolls rather than clipping, and its height is capped in JS to stop
+   just above the legend — a fixed max-height let the expanded panel run underneath the
+   Flood coverage card, which paints later in the DOM and so covered the Track section. */
+#side{top:70px;right:16px;width:206px;overflow-y:auto;z-index:21}
 #side-head{display:flex;align-items:center;justify-content:space-between;
   cursor:pointer;user-select:none;font-size:8.5px;letter-spacing:2px;
   text-transform:uppercase;color:#12639f;font-weight:700;
@@ -252,6 +254,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=23"></script>
+<script type="module" src="./app.js?v=24"></script>
 </body>
 </html>
