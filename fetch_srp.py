@@ -84,52 +84,62 @@ if (f := wfs("results:subcatchments")):
 if (f := wfs("results:sindh_province")):
     clip_dump(f, "sindh_province", ["P_Name", "area"], tol=0.0005)
 
-# ── 42 scenario max-depth rasters ───────────────────────────────────────────
+# ── scenario rasters: 42 runs x 4 result variables ──────────────────────────
 RP = ["2.3", "5", "10", "25", "50", "100", "500"]
 CLIM = ["present", "future"]
 STATE = ["perfect", "redcapacity", "breaches"]
 W_PX = 900
 H_PX = int(round(W_PX * (NORTH - SOUTH) / (EAST - WEST) * 1.0))
 
-print(f"\n-- {len(RP)*len(CLIM)*len(STATE)} scenario rasters ({W_PX}x{H_PX}) --")
-index = []
-for rp, cl, st in itertools.product(RP, CLIM, STATE):
-    # GeoServer keeps the dot: results:t3_2.3yrs_... Stripping it (giving "23yrs")
-    # silently 404s the six 2.3-year scenarios. Keep the dot in the layer name and
-    # only sanitise it for the local filename.
-    layer = f"results:t3_{rp}yrs_{cl}_{st}_maxdepth"
-    tag = f"t3_{rp.replace('.', '_')}yrs_{cl}_{st}"
-    dest = SCEN / f"{tag}.png"
-    url = (f"{GS}/wms?service=WMS&version=1.1.1&request=GetMap&layers={layer}"
-           f"&bbox={WEST},{SOUTH},{EAST},{NORTH}&width={W_PX}&height={H_PX}"
-           f"&srs=EPSG:4326&format=image/png&transparent=true")
-    ok = get(url, dest, timeout=300)
-    size = dest.stat().st_size if dest.exists() else 0
-    if ok and size > 2000:
-        index.append(dict(id=tag, return_period_yr=float(rp), climate=cl,
-                          embankment=st, file=f"scenarios/{tag}.png"))
-        print(f"  {tag:<38}{size/1024:>7.0f} KB")
-    else:
-        print(f"  {tag:<38}  MISSING ({size} B)")
-
-# The portal publishes four result rasters per run. Only max depth is pulled; record
-# the rest so the UI can say what is and is not covered rather than implying the
-# scenario layer is the whole model output.
+# The portal publishes four result rasters per run.
 VARIABLES = [
-    dict(key="maxdepth",    label="Max inundation depth", unit="m",   included=True),
-    dict(key="duration",    label="Inundation duration",  unit="days", included=False),
-    dict(key="maxvelocity", label="Max flow velocity",    unit="m/s", included=False),
-    dict(key="vh",          label="Hazard (velocity x depth)", unit="m2/s", included=False),
+    dict(key="maxdepth",    label="Max inundation depth",     unit="m",     included=True),
+    dict(key="duration",    label="Inundation duration",      unit="days",  included=True),
+    dict(key="maxvelocity", label="Max flow velocity",        unit="m/s",   included=True),
+    dict(key="vh",          label="Hazard (velocity x depth)", unit="m2/s", included=True),
 ]
 
+n_runs = len(RP) * len(CLIM) * len(STATE)
+print(f"\n-- {n_runs} runs x {len(VARIABLES)} variables = "
+      f"{n_runs * len(VARIABLES)} rasters ({W_PX}x{H_PX}) --")
+
+scenarios, missing = [], []
+for rp, cl, st in itertools.product(RP, CLIM, STATE):
+    # GeoServer keeps the dot: results:t3_2.3yrs_... Stripping it (giving "23yrs")
+    # silently 404s the six 2.3-year runs. Keep the dot in the layer name and only
+    # sanitise it for the local filename.
+    tag = f"t3_{rp.replace('.', '_')}yrs_{cl}_{st}"
+    files = {}
+    for v in VARIABLES:
+        layer = f"results:t3_{rp}yrs_{cl}_{st}_{v['key']}"
+        dest = SCEN / f"{tag}__{v['key']}.png"
+        url = (f"{GS}/wms?service=WMS&version=1.1.1&request=GetMap&layers={layer}"
+               f"&bbox={WEST},{SOUTH},{EAST},{NORTH}&width={W_PX}&height={H_PX}"
+               f"&srs=EPSG:4326&format=image/png&transparent=true")
+        ok = get(url, dest, timeout=300)
+        size = dest.stat().st_size if dest.exists() else 0
+        if ok and size > 2000:
+            files[v["key"]] = f"scenarios/{dest.name}"
+        else:
+            missing.append(f"{tag}/{v['key']}")
+    if files:
+        scenarios.append(dict(id=tag, return_period_yr=float(rp), climate=cl,
+                              embankment=st, files=files))
+        print(f"  {tag:<34}{' '.join(sorted(files))}")
+
+got = sum(len(s['files']) for s in scenarios)
+for v in VARIABLES:
+    v["included"] = any(v["key"] in s["files"] for s in scenarios)
+
 (OUT / "scenarios_index.json").write_text(json.dumps(dict(
-    source="SRP-SID DSS (Sindh Irrigation Dept) results:*_maxdepth via WMS",
+    source="SRP-SID DSS (Sindh Irrigation Dept) results:* via WMS",
     portal="https://portal.srpsid-dss.gos.pk/",
     project="https://srpsid-dss.gos.pk/",
     variables=VARIABLES,
     bbox=[WEST, SOUTH, EAST, NORTH], width=W_PX, height=H_PX,
-    variable="maximum inundation depth",
     note=("Model AOI covers the Indus right bank ~26.15-29.24N; areas outside it are "
           "transparent and are not modelled, not dry."),
-    scenarios=index), indent=1))
-print(f"\n{len(index)}/42 scenarios retrieved -> scenarios_index.json")
+    scenarios=scenarios), indent=1))
+print(f"\n{len(scenarios)} runs, {got}/{n_runs*len(VARIABLES)} rasters -> scenarios_index.json")
+if missing:
+    print("missing:", ", ".join(missing[:12]), "..." if len(missing) > 12 else "")

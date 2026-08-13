@@ -183,9 +183,11 @@ states (perfect, reduced capacity, breached). Holding the flood constant and var
 only the embankment state isolates how much of the damage is the flood and how much is
 the condition of the defences.
 
-Each run publishes **four** result rasters — `maxdepth`, `duration`, `maxvelocity` and
-`vh` (velocity x depth hazard). This build carries **max depth only**; the other 126
-rasters are available by the same route, and the in-app tooltip says so. Rasters arrive
+Each run publishes **four** result rasters, and all four are included: `maxdepth` (m),
+`duration` (days), `maxvelocity` (m/s) and `vh` (velocity x depth hazard, m2/s) — 42
+runs x 4 variables = **168 rasters**. A variable selector sits above the scenario list,
+and textures load on demand, so a session only fetches the handful actually viewed
+rather than all 12 MB. Rasters arrive
 via WMS because WCS is disabled, so they carry the portal's colour ramp and cannot be
 queried for depth values. The model covers the Indus right bank only, roughly
 26.15-29.24 N — blank areas inside a scenario are unmodelled, not dry.

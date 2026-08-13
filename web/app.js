@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '26';
+const BUILD = '27';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -436,20 +436,28 @@ const scenMesh = new THREE.Mesh(geo, scenMat);
 scenMesh.renderOrder = 5;
 scene.add(scenMesh);
 
+// Textures load on demand and cache per run+variable. 168 rasters ship, but a session
+// only fetches the handful actually looked at, so carrying all four variables costs
+// nothing at page load.
 const scenTex = {};
-function showScenario(id) {
-  if (!id) { scenMat.uniforms.scenOn.value = 0; return; }
-  const s = SCEN.find(x => x.id === id);
-  if (!s) return;
-  if (!scenTex[id]) {
-    const t = texLoader.load(A(s.file));
+let scenVar = 'maxdepth', scenId = '';
+function showScenario(id, variable) {
+  if (variable) scenVar = variable;
+  if (id !== null && id !== undefined) scenId = id;
+  if (!scenId) { scenMat.uniforms.scenOn.value = 0; return; }
+  const s = SCEN.find(x => x.id === scenId);
+  const file = s && s.files && (s.files[scenVar] || s.files.maxdepth);
+  if (!file) { scenMat.uniforms.scenOn.value = 0; return; }
+  const key = scenId + '|' + scenVar;
+  if (!scenTex[key]) {
+    const t = texLoader.load(A(file));
     t.colorSpace = THREE.SRGBColorSpace;
     t.generateMipmaps = false;
     t.minFilter = THREE.LinearFilter;
     t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
-    scenTex[id] = t;
+    scenTex[key] = t;
   }
-  scenMat.uniforms.scenMap.value = scenTex[id];
+  scenMat.uniforms.scenMap.value = scenTex[key];
   scenMat.uniforms.scenOn.value = 1;
 }
 
@@ -1031,7 +1039,14 @@ if (SCEN.length) {
     showScenario(e.target.value);
     $('scen-note').style.display = e.target.value ? 'block' : 'none';
   });
-  $('scen-count').textContent = `${SCEN.length} runs · ${rps.length} return periods`;
+  const vsel = $('var-sel');
+  const vars = (S.scenarios.variables || []).filter(v => v.included);
+  vsel.innerHTML = vars.map(v =>
+    `<option value="${v.key}">${v.label} (${v.unit})</option>`).join('');
+  vsel.addEventListener('change', e => showScenario(null, e.target.value));
+  const nRas = SCEN.reduce((n, s) => n + Object.keys(s.files || {}).length, 0);
+  $('scen-count').textContent =
+    `${SCEN.length} runs \u00d7 ${vars.length} variables \u00b7 ${nRas} rasters`;
 }
 
 // Cap the layers panel so it stops above the legend instead of running behind it.
@@ -1077,12 +1092,18 @@ document.body.appendChild(varTip);
       varTip.style.left = Math.max(8, Math.min(b.left - 244, innerWidth - 250)) + 'px';
       varTip.style.top = Math.max(8, Math.min(b.top - 4, innerHeight - 150)) + 'px';
     };
+    const hide = () => { varTip.style.display = 'none'; };
     info.addEventListener('mouseenter', show);
     info.addEventListener('click', show);          // touch has no hover
-    info.addEventListener('mouseleave', () => { varTip.style.display = 'none'; });
-    document.addEventListener('pointerdown', e => {
-      if (e.target !== info) varTip.style.display = 'none';
-    });
+    info.addEventListener('mouseleave', hide);
+    // On a touch-capable device `click` opens it but `mouseleave` never fires, so the
+    // tooltip stayed pinned on screen and followed the pointer out over the map. Hide
+    // on any pointer movement that is not on the icon itself.
+    document.addEventListener('pointermove', e => {
+      if (varTip.style.display === 'block' && e.target !== info) hide();
+    }, { passive: true });
+    document.addEventListener('pointerdown', e => { if (e.target !== info) hide(); });
+    $('side').addEventListener('scroll', hide, { passive: true });
   }
 }
 

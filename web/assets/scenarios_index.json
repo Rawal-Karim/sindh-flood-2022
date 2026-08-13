@@ -1,5 +1,5 @@
 {
- "source": "SRP-SID DSS (Sindh Irrigation Dept) results:*_maxdepth via WMS",
+ "source": "SRP-SID DSS (Sindh Irrigation Dept) results:* via WMS",
  "portal": "https://portal.srpsid-dss.gos.pk/",
  "project": "https://srpsid-dss.gos.pk/",
  "variables": [
@@ -13,19 +13,19 @@
    "key": "duration",
    "label": "Inundation duration",
    "unit": "days",
-   "included": false
+   "included": true
   },
   {
    "key": "maxvelocity",
    "label": "Max flow velocity",
    "unit": "m/s",
-   "included": false
+   "included": true
   },
   {
    "key": "vh",
    "label": "Hazard (velocity x depth)",
    "unit": "m2/s",
-   "included": false
+   "included": true
   }
  ],
  "bbox": [
@@ -36,7 +36,6 @@
  ],
  "width": 900,
  "height": 1182,
- "variable": "maximum inundation depth",
  "note": "Model AOI covers the Indus right bank ~26.15-29.24N; areas outside it are transparent and are not modelled, not dry.",
  "scenarios": [
   {
@@ -44,294 +43,504 @@
    "return_period_yr": 2.3,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_2_3yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_2_3yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_2_3yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_2_3yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_2_3yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_2_3yrs_present_redcapacity",
    "return_period_yr": 2.3,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_2_3yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_2_3yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_2_3yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_2_3yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_2_3yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_2_3yrs_present_breaches",
    "return_period_yr": 2.3,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_2_3yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_2_3yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_2_3yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_2_3yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_2_3yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_2_3yrs_future_perfect",
    "return_period_yr": 2.3,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_2_3yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_2_3yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_2_3yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_2_3yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_2_3yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_2_3yrs_future_redcapacity",
    "return_period_yr": 2.3,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_2_3yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_2_3yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_2_3yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_2_3yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_2_3yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_2_3yrs_future_breaches",
    "return_period_yr": 2.3,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_2_3yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_2_3yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_2_3yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_2_3yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_2_3yrs_future_breaches__vh.png"
+   }
   },
   {
    "id": "t3_5yrs_present_perfect",
    "return_period_yr": 5.0,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_5yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_5yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_5yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_5yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_5yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_5yrs_present_redcapacity",
    "return_period_yr": 5.0,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_5yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_5yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_5yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_5yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_5yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_5yrs_present_breaches",
    "return_period_yr": 5.0,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_5yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_5yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_5yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_5yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_5yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_5yrs_future_perfect",
    "return_period_yr": 5.0,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_5yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_5yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_5yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_5yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_5yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_5yrs_future_redcapacity",
    "return_period_yr": 5.0,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_5yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_5yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_5yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_5yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_5yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_5yrs_future_breaches",
    "return_period_yr": 5.0,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_5yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_5yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_5yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_5yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_5yrs_future_breaches__vh.png"
+   }
   },
   {
    "id": "t3_10yrs_present_perfect",
    "return_period_yr": 10.0,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_10yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_10yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_10yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_10yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_10yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_10yrs_present_redcapacity",
    "return_period_yr": 10.0,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_10yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_10yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_10yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_10yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_10yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_10yrs_present_breaches",
    "return_period_yr": 10.0,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_10yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_10yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_10yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_10yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_10yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_10yrs_future_perfect",
    "return_period_yr": 10.0,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_10yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_10yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_10yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_10yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_10yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_10yrs_future_redcapacity",
    "return_period_yr": 10.0,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_10yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_10yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_10yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_10yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_10yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_10yrs_future_breaches",
    "return_period_yr": 10.0,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_10yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_10yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_10yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_10yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_10yrs_future_breaches__vh.png"
+   }
   },
   {
    "id": "t3_25yrs_present_perfect",
    "return_period_yr": 25.0,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_25yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_25yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_25yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_25yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_25yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_25yrs_present_redcapacity",
    "return_period_yr": 25.0,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_25yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_25yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_25yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_25yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_25yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_25yrs_present_breaches",
    "return_period_yr": 25.0,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_25yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_25yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_25yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_25yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_25yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_25yrs_future_perfect",
    "return_period_yr": 25.0,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_25yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_25yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_25yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_25yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_25yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_25yrs_future_redcapacity",
    "return_period_yr": 25.0,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_25yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_25yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_25yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_25yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_25yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_25yrs_future_breaches",
    "return_period_yr": 25.0,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_25yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_25yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_25yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_25yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_25yrs_future_breaches__vh.png"
+   }
   },
   {
    "id": "t3_50yrs_present_perfect",
    "return_period_yr": 50.0,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_50yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_50yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_50yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_50yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_50yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_50yrs_present_redcapacity",
    "return_period_yr": 50.0,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_50yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_50yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_50yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_50yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_50yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_50yrs_present_breaches",
    "return_period_yr": 50.0,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_50yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_50yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_50yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_50yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_50yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_50yrs_future_perfect",
    "return_period_yr": 50.0,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_50yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_50yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_50yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_50yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_50yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_50yrs_future_redcapacity",
    "return_period_yr": 50.0,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_50yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_50yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_50yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_50yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_50yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_50yrs_future_breaches",
    "return_period_yr": 50.0,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_50yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_50yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_50yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_50yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_50yrs_future_breaches__vh.png"
+   }
   },
   {
    "id": "t3_100yrs_present_perfect",
    "return_period_yr": 100.0,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_100yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_100yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_100yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_100yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_100yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_100yrs_present_redcapacity",
    "return_period_yr": 100.0,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_100yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_100yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_100yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_100yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_100yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_100yrs_present_breaches",
    "return_period_yr": 100.0,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_100yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_100yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_100yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_100yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_100yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_100yrs_future_perfect",
    "return_period_yr": 100.0,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_100yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_100yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_100yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_100yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_100yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_100yrs_future_redcapacity",
    "return_period_yr": 100.0,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_100yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_100yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_100yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_100yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_100yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_100yrs_future_breaches",
    "return_period_yr": 100.0,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_100yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_100yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_100yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_100yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_100yrs_future_breaches__vh.png"
+   }
   },
   {
    "id": "t3_500yrs_present_perfect",
    "return_period_yr": 500.0,
    "climate": "present",
    "embankment": "perfect",
-   "file": "scenarios/t3_500yrs_present_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_500yrs_present_perfect__maxdepth.png",
+    "duration": "scenarios/t3_500yrs_present_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_500yrs_present_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_500yrs_present_perfect__vh.png"
+   }
   },
   {
    "id": "t3_500yrs_present_redcapacity",
    "return_period_yr": 500.0,
    "climate": "present",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_500yrs_present_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_500yrs_present_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_500yrs_present_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_500yrs_present_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_500yrs_present_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_500yrs_present_breaches",
    "return_period_yr": 500.0,
    "climate": "present",
    "embankment": "breaches",
-   "file": "scenarios/t3_500yrs_present_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_500yrs_present_breaches__maxdepth.png",
+    "duration": "scenarios/t3_500yrs_present_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_500yrs_present_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_500yrs_present_breaches__vh.png"
+   }
   },
   {
    "id": "t3_500yrs_future_perfect",
    "return_period_yr": 500.0,
    "climate": "future",
    "embankment": "perfect",
-   "file": "scenarios/t3_500yrs_future_perfect.png"
+   "files": {
+    "maxdepth": "scenarios/t3_500yrs_future_perfect__maxdepth.png",
+    "duration": "scenarios/t3_500yrs_future_perfect__duration.png",
+    "maxvelocity": "scenarios/t3_500yrs_future_perfect__maxvelocity.png",
+    "vh": "scenarios/t3_500yrs_future_perfect__vh.png"
+   }
   },
   {
    "id": "t3_500yrs_future_redcapacity",
    "return_period_yr": 500.0,
    "climate": "future",
    "embankment": "redcapacity",
-   "file": "scenarios/t3_500yrs_future_redcapacity.png"
+   "files": {
+    "maxdepth": "scenarios/t3_500yrs_future_redcapacity__maxdepth.png",
+    "duration": "scenarios/t3_500yrs_future_redcapacity__duration.png",
+    "maxvelocity": "scenarios/t3_500yrs_future_redcapacity__maxvelocity.png",
+    "vh": "scenarios/t3_500yrs_future_redcapacity__vh.png"
+   }
   },
   {
    "id": "t3_500yrs_future_breaches",
    "return_period_yr": 500.0,
    "climate": "future",
    "embankment": "breaches",
-   "file": "scenarios/t3_500yrs_future_breaches.png"
+   "files": {
+    "maxdepth": "scenarios/t3_500yrs_future_breaches__maxdepth.png",
+    "duration": "scenarios/t3_500yrs_future_breaches__duration.png",
+    "maxvelocity": "scenarios/t3_500yrs_future_breaches__maxvelocity.png",
+    "vh": "scenarios/t3_500yrs_future_breaches__vh.png"
+   }
   }
  ]
 }

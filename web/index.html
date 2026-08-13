@@ -113,7 +113,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 .sw{width:16px;height:5px;border-radius:3px;margin-right:8px;flex-shrink:0}
 .slab{display:flex;align-items:center;font-size:9px;color:#405f78;margin:9px 0 4px}
 .slab input[type=range]{flex:1;margin-left:8px;accent-color:#12639f}
-#scen-sel{width:100%;font-size:9.5px;padding:5px 6px;margin-bottom:5px;
+#var-sel,#scen-sel{width:100%;font-size:9.5px;padding:5px 6px;margin-bottom:5px;
   border:1px solid rgba(20,60,100,.18);border-radius:7px;
   background:rgba(255,255,255,.75);color:#0d1f33;cursor:pointer}
 #valid{margin-top:11px;font-size:8.5px;color:#5c7d99;line-height:1.6}
@@ -238,6 +238,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   <div class="slab">Speed <input type="range" id="speed" min="0.25" max="4" step="0.25" value="1"></div>
 
   <h3 style="margin-top:13px">Modelled scenarios <span id="scen-info" title="">i</span></h3>
+  <select id="var-sel"></select>
   <select id="scen-sel"></select>
   <div id="scen-count" style="font-size:8px;color:#5c7d99"></div>
   <div id="scen-note" style="display:none;font-size:8px;color:#a8631a;line-height:1.5;margin-top:4px">SRP-SID DSS max depth. Model covers the Indus right bank only — blank areas outside it are unmodelled, not dry.</div>
@@ -271,6 +272,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=26"></script>
+<script type="module" src="./app.js?v=27"></script>
 </body>
 </html>
