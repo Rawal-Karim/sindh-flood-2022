@@ -250,6 +250,32 @@ for name in ("bunds", "permanent_water", "breach_candidates_2022",
     elif (OUT / f"{name}.geojson").exists():
         overlays[name] = f"{name}.geojson"   # written directly by its own fetch script
 
+# ── half-resolution hill-torrent texture for phones ─────────────────────────
+# arrival.png is the single heaviest asset. A plain image resize would wash the
+# channels out: they are only a few cells wide, so bilinear averaging drops their
+# strength and drags the arrival front late. Reduce by block statistics instead —
+# maximum for channel strength, minimum for arrival time — which is the same rule the
+# dilation uses and keeps both the network and the timing intact.
+ap = OUT / "arrival.png"
+arrival_mobile = None
+if ap.exists():
+    a = np.asarray(Image.open(ap).convert("RGB"))
+    f = 2
+    H2, W2 = a.shape[0] // f, a.shape[1] // f
+    blk = a[:H2*f, :W2*f].reshape(H2, f, W2, f, 3)
+    out_m = np.zeros((H2, W2, 3), np.uint8)
+    strength = blk[..., 1].max(axis=(1, 3))
+    arr_masked = np.where(blk[..., 1] > 0, blk[..., 0], 255)
+    out_m[..., 1] = strength
+    out_m[..., 0] = np.where(strength > 0, arr_masked.min(axis=(1, 3)), 254)
+    out_m[..., 2] = blk[..., 2].mean(axis=(1, 3))
+    mp = OUT / "arrival_mobile.png"
+    Image.fromarray(out_m, mode="RGB").save(mp, optimize=True)
+    arrival_mobile = "arrival_mobile.png"
+    keep = 100 * (strength > 0).sum() / max((a[..., 1] > 0).sum() / (f * f), 1)
+    print(f"arrival_mobile.png: {W2}x{H2}, {mp.stat().st_size/1e6:.2f} MB "
+          f"(from {ap.stat().st_size/1e6:.2f} MB), channel cells retained {keep:.0f}%")
+
 # ── clip every overlay to the terrain bounds ────────────────────────────────
 # Producers have drifted before: local_layers.py still carried the pre-review AOI, so
 # bunds reached 190 km south of the block and draped against a clamped edge height,
@@ -287,6 +313,7 @@ scene = dict(
     tracks=tracks,
     overlays=overlays,
     rain=rain,
+    arrival_mobile=arrival_mobile,
     scenarios=(json.loads((OUT / "scenarios_index.json").read_text())
                if (OUT / "scenarios_index.json").exists() else {}),
     lakes=lake_info,

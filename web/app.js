@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '24';
+const BUILD = '25';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -276,7 +276,9 @@ void main(){
   gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.95));
 }`;
 const torrentMat = new THREE.ShaderMaterial({
-  uniforms: { arrMap: { value: dataTex(A('arrival.png')) },
+  uniforms: { arrMap: { value: dataTex(A(
+                // half-res on phones: this is the heaviest single asset
+                (innerWidth < 820 && S.arrival_mobile) ? S.arrival_mobile : 'arrival.png')) },
               noiseMap: { value: noiseMap },
               uT: { value: 0 }, uOpacity: { value: 0 }, uTime: { value: 0 } },
   vertexShader: WATER_VERT, fragmentShader: TORRENT_FRAG,

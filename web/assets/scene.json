@@ -1189,6 +1189,7 @@
    }
   ]
  },
+ "arrival_mobile": "arrival_mobile.png",
  "scenarios": {
   "source": "SRP-SID DSS (Sindh Irrigation Dept) results:*_maxdepth via WMS",
   "bbox": [
