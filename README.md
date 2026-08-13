@@ -176,6 +176,29 @@ metadata is stock GeoServer boilerplate with no organisation or contact fields, 
 ownership rests on the portal pages and the World Bank record rather than on the
 service itself.
 
+### What the three embankment states mean
+
+The portal groups these under its own heading — **maintenance level** (spelled
+`mantaniance` in the layer names) — with three published layers:
+`results:mantaniance_level_-_perfect`, `..._-_reduced_capacity` and
+`..._-_flood_2022`. The scenario rasters use `perfect` / `redcapacity` / `breaches`,
+so `breaches` lines up with the *flood 2022* maintenance level — the embankments in the
+condition they were actually in during the 2022 event, rather than a hypothetical.
+
+| Token | Reading |
+|---|---|
+| `perfect` | Embankments intact and at design standard |
+| `redcapacity` | Embankments degraded — reduced conveyance / freeboard |
+| `breaches` | Embankments in their 2022 condition, i.e. breached |
+
+**This reading is inferred, not sourced.** It rests on the layer naming, the portal's
+own "maintenance level" grouping, and notes in this repo — not on a methodology
+document. The three maintenance-level layers are raster-only (WFS returns HTTP 400),
+so their attributes cannot be read. The hydraulic definitions — how much crest loss
+"reduced capacity" represents, which breaches are imposed and at what width — are not
+recoverable from the portal and would have to come from the SRP model report or the
+SID PIU. Treat the table above as a working interpretation until that is confirmed.
+
 **The 42 scenarios are design floods, not the 2022 event.** Layer names encode the
 matrix — `results:t3_100yrs_present_breaches_maxdepth` — across 7 return periods
 (2.3 / 5 / 10 / 25 / 50 / 100 / 500 yr) x 2 climates (present, future) x 3 embankment

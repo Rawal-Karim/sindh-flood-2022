@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '28';
+const BUILD = '29';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -1001,7 +1001,14 @@ $('l-perm').addEventListener('change', e => { const o = overlayGroup.getObjectBy
 $('l-bund').addEventListener('change', e => { const o = overlayGroup.getObjectByName('bunds'); if (o) o.visible = e.target.checked; });
 $('l-prov').addEventListener('change', e => { const o = overlayGroup.getObjectByName('provinces'); if (o) o.visible = e.target.checked; });
 $('l-dist').addEventListener('change', e => { const o = overlayGroup.getObjectByName('districts'); if (o) o.visible = e.target.checked; });
-$('l-lakes').addEventListener('change', e => { areaMat.uniforms.lakeOn.value = e.target.checked ? 1 : 0; });
+// Lakes are drawn twice: a baked fill in areaMat and a vector outline that is also
+// the pick target. Toggling only the fill left the outline object visible, so an
+// unchecked layer still answered hover with "Manchar Lake" and drew a highlight.
+$('l-lakes').addEventListener('change', e => {
+  areaMat.uniforms.lakeOn.value = e.target.checked ? 1 : 0;
+  const o = overlayGroup.getObjectByName('lakes');
+  if (o) o.visible = e.target.checked;
+});
 $('l-canals').addEventListener('change', e => { const o = overlayGroup.getObjectByName('canals'); if (o) o.visible = e.target.checked; });
 $('l-drains').addEventListener('change', e => { const o = overlayGroup.getObjectByName('drains'); if (o) o.visible = e.target.checked; });
 $('l-srpsub').addEventListener('change', e => { const o = overlayGroup.getObjectByName('srpsub'); if (o) o.visible = e.target.checked; });
@@ -1114,6 +1121,16 @@ document.body.appendChild(varTip);
     document.addEventListener('pointerdown', e => { if (e.target !== info) hide(); });
     $('side').addEventListener('scroll', hide, { passive: true });
   }
+}
+
+
+// Every pickable layer must have a toggle that actually hides its object, or an
+// unchecked layer keeps answering hover. Warn loudly in dev if one is unreachable.
+{
+  const toggled = new Set(['bunds', 'perm', 'provinces', 'districts', 'lakes', 'cities',
+                           'canals', 'drains', 'srpsub', 'naisub']);
+  const orphan = PICK.map(l => l.name).filter(n => !toggled.has(n));
+  if (orphan.length) console.warn('pickable layers with no visibility toggle:', orphan);
 }
 
 // ── orientation gizmo ───────────────────────────────────────────────────────
