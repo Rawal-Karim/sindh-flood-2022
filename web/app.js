@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '27';
+const BUILD = '28';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -1082,10 +1082,19 @@ document.body.appendChild(varTip);
     const rows = vars.map(v => `<div class="v"><b class="${v.included ? 'yes' : 'no'}">` +
       `${v.included ? '\u2713' : '\u00b7'}</b><span class="${v.included ? 'yes' : 'no'}">` +
       `${v.label} <i>(${v.unit})</i>${v.included ? '' : ' — not included'}</span></div>`).join('');
+    // Footer is derived, not written: it went stale the moment the other three
+    // variables were added and still claimed only max depth was pulled.
     const n = (meta.scenarios || []).length;
+    const inc = vars.filter(v => v.included).length;
+    const nRas = (meta.scenarios || []).reduce(
+      (t, s) => t + Object.keys(s.files || {}).length, 0);
+    const missing = vars.filter(v => !v.included).map(v => v.label);
     varTip.innerHTML = `<h4>Scenario variables</h4>${rows}` +
-      `<div class="src">${n} runs of max depth pulled from the SRP-SID DSS. ` +
-      `The other three exist on the portal and can be added the same way.</div>`;
+      `<div class="src">${n} runs \u00d7 ${inc} variable${inc === 1 ? '' : 's'} = ` +
+      `${nRas} rasters from the SRP-SID DSS.` +
+      (missing.length ? ` Not pulled: ${missing.join(', ')}.` : '') +
+      ` Rendered via WMS, so colour ramps are the portal's and values are not` +
+      ` queryable.</div>`;
     const show = () => {
       const b = info.getBoundingClientRect();
       varTip.style.display = 'block';
