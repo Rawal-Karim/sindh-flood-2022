@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '20';
+const BUILD = '23';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -41,7 +41,9 @@ const heightAtLonLat = (lon, lat) => heightAt(
 
 // ── scene ───────────────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// Phones are fill-rate bound here: full DPR over a 512x731 mesh with eight draped
+// layers drops frames badly, and the extra pixels buy nothing at this scale.
+renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 820 ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 $('view').appendChild(renderer.domElement);
@@ -51,8 +53,23 @@ scene.background = new THREE.Color(0xcfe4f3);
 
 const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 1, 8000);
 // Oblique from the SSW, matching the reference figure: mountains on the left,
-// the plain receding north. DEPTH_KM / (2 tan(fov/2)) frames the full block.
+// the plain receding north.
 camera.position.set(-300, 470, 780);
+
+// Camera distance has to follow the viewport aspect. The keyframes were tuned on a
+// wide desktop window; in portrait the horizontal FOV collapses to ~18 deg, so the
+// same distance puts the camera inside the Kirthar with the block off-screen
+// entirely — which also made every pick miss, since picking raycasts the terrain.
+const CAM_REF_DIST = 1022;      // distance that framed the block at the tuned aspect
+let camScale = 1;
+function updateCamScale() {
+  const fovY = THREE.MathUtils.degToRad(camera.fov);
+  const fovX = 2 * Math.atan(Math.tan(fovY / 2) * camera.aspect);
+  const need = Math.max((WIDTH_KM * 1.08) / (2 * Math.tan(fovX / 2)),
+                        (DEPTH_KM * 1.08) / (2 * Math.tan(fovY / 2)));
+  camScale = need / CAM_REF_DIST;
+  controls.maxDistance = Math.max(2200, need * 1.6);
+}
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 30, 0);
@@ -721,50 +738,88 @@ function showTip(hit, px, py) {
     .map(([k, v]) => `<div><b>${NICE[k]}:</b> ${clean(v)}</div>`)
     .join('');
   tip.innerHTML = `<div class="t-lay">${hit.layer.label}</div>${rows || '<div>—</div>'}` +
-                  `<div class="t-hint">click to zoom</div>`;
+                  `<div class="t-hint">${IS_TOUCH ? 'tap again to zoom' : 'click to zoom'}</div>`;
   tip.style.display = 'block';
-  tip.style.left = Math.min(px + 14, innerWidth - 210) + 'px';
-  tip.style.top = Math.min(py + 14, innerHeight - 90) + 'px';
+  const dx = IS_TOUCH ? -100 : 14, dy = IS_TOUCH ? -84 : 14;
+  tip.style.left = Math.max(8, Math.min(px + dx, innerWidth - 210)) + 'px';
+  tip.style.top = Math.max(8, Math.min(py + dy, innerHeight - 90)) + 'px';
 }
 
+// Input. A phone has no hover, so pointer handling splits:
+//   mouse  — hover selects, click zooms (unchanged)
+//   touch  — tap selects and shows the popup, tapping the same feature again zooms
+// A tap is distinguished from an orbit drag by distance and duration, otherwise every
+// rotate would fire a pick on release.
+const IS_TOUCH = matchMedia('(hover: none)').matches;
 let lastPick = 0;
-renderer.domElement.addEventListener('pointermove', e => {
-  const now = performance.now();
-  if (now - lastPick < 40) return;          // picking is O(features); throttle it
-  lastPick = now;
-  ptr.x = (e.clientX / innerWidth) * 2 - 1;
-  ptr.y = -(e.clientY / innerHeight) * 2 + 1;
+
+function pickAt(px, py) {
+  ptr.x = (px / innerWidth) * 2 - 1;
+  ptr.y = -(py / innerHeight) * 2 + 1;
   ray.setFromCamera(ptr, camera);
   const hit = ray.intersectObject(terrain, false)[0];
-  if (!hit) { tip.style.display = 'none'; clearHighlight(); hovered = null; return; }
+  if (!hit) return null;
   const lon = lonOfX(hit.point.x), lat = latOfZ(hit.point.z);
-  // tolerance scales with camera distance so thin lines stay grabbable when zoomed out
-  const tol = Math.max(0.01, camera.position.distanceTo(controls.target) / 1000 * 0.05);
-  const f = featureAt(lon, lat, tol);
+  const tol = Math.max(0.01, camera.position.distanceTo(controls.target) / 1000 * 0.05)
+            * (IS_TOUCH ? 2.2 : 1);        // fingers are blunter than a cursor
+  return featureAt(lon, lat, tol);
+}
+
+function selectFeature(f, px, py) {
   if (!f) { tip.style.display = 'none'; clearHighlight(); hovered = null; return; }
   if (f.f !== hovered) { hovered = f.f; highlight(f.f); }
-  showTip(f, e.clientX, e.clientY);
-});
+  showTip(f, px, py);
+}
 
-renderer.domElement.addEventListener('pointerleave', () => {
-  tip.style.display = 'none'; clearHighlight(); hovered = null;
-});
-
-// click -> frame the feature
-let flight = null;
-renderer.domElement.addEventListener('click', e => {
+function zoomToHovered() {
   if (!hovered) return;
   const [x0, y0, x1, y1] = hovered.bbox;
   const cLon = (x0 + x1) / 2, cLat = (y0 + y1) / 2;
   const wKm = (x1 - x0) * 111.32 * Math.cos(cLat * Math.PI / 180);
   const hKm = (y1 - y0) * 110.54;
   const span = Math.max(wKm, hKm, 8);
-  const dist = Math.max(span * 1.9, 45);
+  const dist = Math.max(span * 1.9, 45) * Math.max(camScale, 1);
   const tgt = new THREE.Vector3(lonToX(cLon), yOf(heightAtLonLat(cLon, cLat)), latToZ(cLat));
   const pos = tgt.clone().add(new THREE.Vector3(-dist * 0.45, dist * 0.75, dist * 0.75));
   autoCam = false; $('l-cam').checked = false;
   flight = { t: 0, fromP: camera.position.clone(), fromT: controls.target.clone(),
              toP: pos, toT: tgt };
+}
+
+renderer.domElement.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;      // touch handled on tap
+  const now = performance.now();
+  if (now - lastPick < 40) return;            // picking is O(features); throttle it
+  lastPick = now;
+  selectFeature(pickAt(e.clientX, e.clientY), e.clientX, e.clientY);
+});
+
+renderer.domElement.addEventListener('pointerleave', () => {
+  if (IS_TOUCH) return;
+  tip.style.display = 'none'; clearHighlight(); hovered = null;
+});
+
+let flight = null;
+let down = null;
+renderer.domElement.addEventListener('pointerdown', e => {
+  down = { x: e.clientX, y: e.clientY, t: performance.now() };
+});
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!down) return;
+  const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
+  const held = performance.now() - down.t;
+  down = null;
+  if (moved > 10 || held > 500) return;       // that was an orbit, not a tap
+  const prev = hovered;
+  const f = pickAt(e.clientX, e.clientY);
+  if (e.pointerType === 'mouse') {
+    // desktop: the hover already selected it, so a click means zoom
+    selectFeature(f, e.clientX, e.clientY);
+    if (f) zoomToHovered();
+    return;
+  }
+  selectFeature(f, e.clientX, e.clientY);
+  if (f && prev === f.f) zoomToHovered();     // second tap on the same feature
 });
 
 // ── timeline ────────────────────────────────────────────────────────────────
@@ -1001,6 +1056,10 @@ function drawGizmo() {
 }
 
 // ── run ─────────────────────────────────────────────────────────────────────
+updateCamScale();
+// apply the fit to the opening view as well as the keyframed path
+camera.position.sub(controls.target).multiplyScalar(camScale).add(controls.target);
+
 await loadOverlays();
 await loadPlaces();
 for (const [n, on] of [['districts', false], ['cities', false],
@@ -1016,6 +1075,8 @@ addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 820 ? 1.5 : 2));
+  updateCamScale();
   fitVeil();
 });
 
@@ -1039,6 +1100,7 @@ function cameraFor(u) {
   const f = ease(Math.min(Math.max((u - a.u) / (b.u - a.u), 0), 1));
   _p.fromArray(a.pos).lerp(new THREE.Vector3().fromArray(b.pos), f);
   _t.fromArray(a.tgt).lerp(new THREE.Vector3().fromArray(b.tgt), f);
+  _p.sub(_t).multiplyScalar(camScale).add(_t);   // pull back to fit the viewport
 }
 
 let last = performance.now();

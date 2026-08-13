@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#cfe4f3">
 <title>Sindh 2022 Flood — 3D Observed Replay</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
   font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0d1f33}
 #view{position:absolute;inset:0}
+/* the canvas must own its gestures, or a one-finger orbit scrolls the page instead */
+#view canvas{touch-action:none}
 #loading{position:absolute;inset:0;display:flex;flex-direction:column;
   align-items:center;justify-content:center;background:#cfe4f3;z-index:50;
   transition:opacity .7s}
@@ -126,19 +129,49 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #pick-tip .t-lay{font-size:8px;letter-spacing:1.4px;text-transform:uppercase;
   color:#6fc2ef;margin-bottom:3px;font-weight:700}
 #pick-tip .t-hint{font-size:7.5px;color:#7f98ad;margin-top:4px;font-style:italic}
-/* On a narrow window the HUD and the collapsed layers chip would sit on top of each
-   other; shrink the HUD rather than let them overlap. */
-@media (max-width:780px){
-  #hud{width:calc(100vw - 250px);min-width:140px}
-  #hud h1{font-size:11px}
-  #date{font-size:20px}
-}
 #gizmo{position:absolute;bottom:16px;left:16px;width:74px;height:74px;z-index:20;
   pointer-events:none;background:rgba(255,255,255,.62);
   backdrop-filter:blur(12px) saturate(1.2);
   -webkit-backdrop-filter:blur(12px) saturate(1.2);
   border:1px solid rgba(20,60,100,.12);border-radius:50%;
   box-shadow:0 3px 14px rgba(20,50,90,.11)}
+/* ── Phone / narrow layout ──────────────────────────────────────────────────
+   Side-by-side cards do not fit under ~820 px, so the panels stack instead: the
+   timeline spans the top, the HUD sits beneath it, and the layer list becomes a
+   bottom sheet. Rows grow to a comfortable touch target. */
+@media (max-width:820px){
+  #ctl{top:8px;left:8px;right:8px;width:auto;transform:none;
+       padding:7px 12px 5px;border-radius:16px;gap:10px}
+  #hud{top:64px;left:8px;right:8px;width:auto;padding:10px 13px}
+  #hud h1{font-size:10.5px;letter-spacing:.8px}
+  #hud .sub{font-size:8px}
+  #date{font-size:21px;margin-top:8px}
+  #area{font-size:10px;margin-top:6px}
+  #srcline{font-size:8px;margin-top:6px}
+
+  /* layers become a bottom sheet so the thumb can reach them */
+  #side{top:auto;bottom:8px;left:8px;right:8px;width:auto;
+        max-height:min(58vh, 460px);border-radius:16px}
+  #side.collapsed{max-height:none}
+  .row{padding:8px 6px;font-size:11.5px;margin-bottom:0}
+  .row input{width:16px;height:16px}
+  .sw{width:18px;height:6px}
+  .slab{font-size:10px;margin:12px 0 6px}
+  #scen-sel{font-size:11px;padding:8px 7px}
+
+  /* explanatory chrome costs more than it gives on a small screen */
+  #legend{display:none}
+  #gizmo{width:52px;height:52px;top:auto;bottom:62px;left:8px;right:auto}
+  .lbl{font-size:9px}
+  .lbl.big{font-size:10.5px}
+  #pick-tip{font-size:10.5px;max-width:230px;padding:9px 11px}
+}
+@media (max-width:820px) and (max-height:520px){
+  /* landscape phone: almost no vertical room, so drop the HUD detail */
+  #hud{width:190px;right:auto}
+  #srcline,#warn{display:none}
+  #side{max-height:74vh}
+}
 </style>
 </head>
 <body>
@@ -219,6 +252,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=20"></script>
+<script type="module" src="./app.js?v=23"></script>
 </body>
 </html>
