@@ -112,8 +112,21 @@ for rp, cl, st in itertools.product(RP, CLIM, STATE):
     else:
         print(f"  {tag:<38}  MISSING ({size} B)")
 
+# The portal publishes four result rasters per run. Only max depth is pulled; record
+# the rest so the UI can say what is and is not covered rather than implying the
+# scenario layer is the whole model output.
+VARIABLES = [
+    dict(key="maxdepth",    label="Max inundation depth", unit="m",   included=True),
+    dict(key="duration",    label="Inundation duration",  unit="days", included=False),
+    dict(key="maxvelocity", label="Max flow velocity",    unit="m/s", included=False),
+    dict(key="vh",          label="Hazard (velocity x depth)", unit="m2/s", included=False),
+]
+
 (OUT / "scenarios_index.json").write_text(json.dumps(dict(
     source="SRP-SID DSS (Sindh Irrigation Dept) results:*_maxdepth via WMS",
+    portal="https://portal.srpsid-dss.gos.pk/",
+    project="https://srpsid-dss.gos.pk/",
+    variables=VARIABLES,
     bbox=[WEST, SOUTH, EAST, NORTH], width=W_PX, height=H_PX,
     variable="maximum inundation depth",
     note=("Model AOI covers the Indus right bank ~26.15-29.24N; areas outside it are "

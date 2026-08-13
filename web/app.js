@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '25';
+const BUILD = '26';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -1052,6 +1052,39 @@ $('side-head').addEventListener('click', () => {
   $('side').classList.toggle('collapsed');
   fitSidePanel();
 });
+
+// Scenario variable tooltip. The portal publishes four result rasters per run and
+// this build carries only max depth, so the tooltip states which are covered rather
+// than letting the layer imply it is the full model output.
+const varTip = document.createElement('div');
+varTip.id = 'var-tip';
+document.body.appendChild(varTip);
+{
+  const meta = S.scenarios || {};
+  const vars = meta.variables || [];
+  const info = $('scen-info');
+  if (info && vars.length) {
+    const rows = vars.map(v => `<div class="v"><b class="${v.included ? 'yes' : 'no'}">` +
+      `${v.included ? '\u2713' : '\u00b7'}</b><span class="${v.included ? 'yes' : 'no'}">` +
+      `${v.label} <i>(${v.unit})</i>${v.included ? '' : ' — not included'}</span></div>`).join('');
+    const n = (meta.scenarios || []).length;
+    varTip.innerHTML = `<h4>Scenario variables</h4>${rows}` +
+      `<div class="src">${n} runs of max depth pulled from the SRP-SID DSS. ` +
+      `The other three exist on the portal and can be added the same way.</div>`;
+    const show = () => {
+      const b = info.getBoundingClientRect();
+      varTip.style.display = 'block';
+      varTip.style.left = Math.max(8, Math.min(b.left - 244, innerWidth - 250)) + 'px';
+      varTip.style.top = Math.max(8, Math.min(b.top - 4, innerHeight - 150)) + 'px';
+    };
+    info.addEventListener('mouseenter', show);
+    info.addEventListener('click', show);          // touch has no hover
+    info.addEventListener('mouseleave', () => { varTip.style.display = 'none'; });
+    document.addEventListener('pointerdown', e => {
+      if (e.target !== info) varTip.style.display = 'none';
+    });
+  }
+}
 
 // ── orientation gizmo ───────────────────────────────────────────────────────
 const gz = $('gizmo').getContext('2d');

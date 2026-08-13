@@ -156,8 +156,41 @@ Large intermediates are gitignored and regenerable — see `.gitignore`.
 | District boundaries | [OCHA COD-AB via HDX](https://data.humdata.org/dataset/cod-ab-pak) | CC BY-IGO |
 | Provincial boundary | SRP-SID DSS `results:sindh_province` (SID's own) | Departmental |
 | Lakes, city extents | [OpenStreetMap](https://www.openstreetmap.org) via Overpass | ODbL |
-| Canals, drains, sub-catchments, 42 modelled scenarios | SRP-SID DSS, Sindh Irrigation Dept | Departmental |
+| Canals, drains, sub-catchments, 42 modelled scenarios | [SRP-SID DSS](https://portal.srpsid-dss.gos.pk/), Sindh Irrigation Dept | Departmental |
 | Renderer | [three.js](https://threejs.org) r169 | MIT |
+
+### The SRP-SID DSS
+
+The canal network, drains, sub-catchments, provincial boundary and all 42 modelled
+scenarios come from the Sindh Irrigation Department's own decision support system.
+
+| | |
+|---|---|
+| Project site | <https://srpsid-dss.gos.pk/> — page title *"Sindh Resilience Project (SRP)"*, described as *"A Pakistan decision support system for flood forecasting and inundation"* |
+| Data portal | <https://portal.srpsid-dss.gos.pk/> — page title *"Flood Risk Assessment - Right Bank of Indus River"* |
+| GeoServer | `https://portal.srpsid-dss.gos.pk/geoserver` — 901 WFS feature types, 892 published layers |
+| Programme | Sindh Resilience Project, World Bank financed, Sindh Irrigation Department among the implementing agencies — [press release, Dec 2020](https://www.worldbank.org/en/news/press-release/2020/12/08/world-bank-announces-300-million-for-pakistan-to-build-resilience-to-natural-disasters-and-health-emergencies) · [project record P173087](https://projects.worldbank.org/en/projects-operations/project-detail/P173087) |
+
+The `.gos.pk` domain is Government of Sindh. Note that the GeoServer's own service
+metadata is stock GeoServer boilerplate with no organisation or contact fields, so
+ownership rests on the portal pages and the World Bank record rather than on the
+service itself.
+
+**The 42 scenarios are design floods, not the 2022 event.** Layer names encode the
+matrix — `results:t3_100yrs_present_breaches_maxdepth` — across 7 return periods
+(2.3 / 5 / 10 / 25 / 50 / 100 / 500 yr) x 2 climates (present, future) x 3 embankment
+states (perfect, reduced capacity, breached). Holding the flood constant and varying
+only the embankment state isolates how much of the damage is the flood and how much is
+the condition of the defences.
+
+Each run publishes **four** result rasters — `maxdepth`, `duration`, `maxvelocity` and
+`vh` (velocity x depth hazard). This build carries **max depth only**; the other 126
+rasters are available by the same route, and the in-app tooltip says so. Rasters arrive
+via WMS because WCS is disabled, so they carry the portal's colour ramp and cannot be
+queried for depth values. The model covers the Indus right bank only, roughly
+26.15-29.24 N — blank areas inside a scenario are unmodelled, not dry.
+
+---
 
 Bund alignments and 2022 breaching points are derived from Sindh Irrigation Department
 material and are published here at the Department's direction. Check with SID before

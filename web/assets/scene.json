@@ -1192,6 +1192,34 @@
  "arrival_mobile": "arrival_mobile.png",
  "scenarios": {
   "source": "SRP-SID DSS (Sindh Irrigation Dept) results:*_maxdepth via WMS",
+  "portal": "https://portal.srpsid-dss.gos.pk/",
+  "project": "https://srpsid-dss.gos.pk/",
+  "variables": [
+   {
+    "key": "maxdepth",
+    "label": "Max inundation depth",
+    "unit": "m",
+    "included": true
+   },
+   {
+    "key": "duration",
+    "label": "Inundation duration",
+    "unit": "days",
+    "included": false
+   },
+   {
+    "key": "maxvelocity",
+    "label": "Max flow velocity",
+    "unit": "m/s",
+    "included": false
+   },
+   {
+    "key": "vh",
+    "label": "Hazard (velocity x depth)",
+    "unit": "m2/s",
+    "included": false
+   }
+  ],
   "bbox": [
    66.09,
    26.2,
