@@ -122,6 +122,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 #legend h3{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7e97ac;
   margin:0 0 9px;font-weight:700}
 #legend .sw{width:18px;height:6px;border-radius:3px}
+#scen-legend{margin-bottom:12px;padding-bottom:11px;
+  border-bottom:1px solid rgba(20,60,100,.14)}
+#scen-legend .ramp{height:9px;border-radius:3px;margin-bottom:3px;
+  border:1px solid rgba(20,60,100,.16)}
+#scen-legend .ticks{position:relative;height:11px;font-size:7.5px;color:#5f7e97}
+#scen-legend .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+#scen-legend .unit{font-size:7.5px;color:#7e97ac;margin-top:2px}
 .lg{display:flex;align-items:center;font-size:9px;margin-bottom:6px;color:#40607a}
 .lg:last-child{margin-bottom:0}
 #scen-info{display:inline-flex;align-items:center;justify-content:center;
@@ -247,6 +254,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 </div>
 
 <div class="panel" id="legend">
+  <div id="scen-legend" style="display:none"></div>
   <h3>Flood coverage</h3>
   <div class="lg"><span class="sw" style="background:rgba(26,120,216,.30)"></span>partial (&lt;30%)</div>
   <div class="lg"><span class="sw" style="background:rgba(26,120,216,.65)"></span>moderate</div>
@@ -272,6 +280,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#cfe4f3;
 <!-- Bump ?v= whenever app.js changes. GitHub Pages serves assets with
      cache-control: max-age=600, so without this a deploy leaves visitors on the
      previous build for up to ten minutes. -->
-<script type="module" src="./app.js?v=29"></script>
+<script type="module" src="./app.js?v=30"></script>
 </body>
 </html>

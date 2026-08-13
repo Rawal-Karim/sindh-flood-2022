@@ -127,6 +127,44 @@ for rp, cl, st in itertools.product(RP, CLIM, STATE):
                               embankment=st, files=files))
         print(f"  {tag:<34}{' '.join(sorted(files))}")
 
+# ── legends ─────────────────────────────────────────────────────────────────
+# The bitmap GetLegendGraphic is usable but labels every break as "0.0000". The SLD
+# behind it is retrievable via GetStyles, so pull the colour map itself and let the
+# app render a native legend with tidy numbers and the app's own typography.
+import xml.etree.ElementTree as ET
+import urllib.parse
+
+def legend(var_key):
+    layer = f"results:t3_100yrs_present_breaches_{var_key}"
+    url = (f"{GS}/wms?service=WMS&version=1.1.1&request=GetStyles"
+           f"&layers={urllib.parse.quote(layer)}"
+           f"&format=application/vnd.ogc.sld%2Bxml")
+    dest = CACHE / f"sld_{var_key}.xml"
+    if not get(url, dest, timeout=180):
+        return None
+    try:
+        root = ET.fromstring(dest.read_bytes())
+    except ET.ParseError:
+        return None
+    ns = {"sld": "http://www.opengis.net/sld"}
+    stops = []
+    for e in root.iter():
+        if e.tag.endswith("ColorMapEntry"):
+            a = e.attrib
+            try:
+                stops.append(dict(color=a["color"], value=float(a["quantity"]),
+                                  opacity=float(a.get("opacity", 1))))
+            except (KeyError, ValueError):
+                pass
+    stops.sort(key=lambda s: s["value"])
+    return stops or None
+
+for v in VARIABLES:
+    v["ramp"] = legend(v["key"])
+    n = len(v["ramp"]) if v["ramp"] else 0
+    rng = f"{v['ramp'][0]['value']:g}-{v['ramp'][-1]['value']:g}" if v["ramp"] else "-"
+    print(f"  legend {v['key']:<12} {n} stops  range {rng} {v['unit']}")
+
 got = sum(len(s['files']) for s in scenarios)
 for v in VARIABLES:
     v["included"] = any(v["key"] in s["files"] for s in scenarios)

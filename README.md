@@ -210,7 +210,15 @@ Each run publishes **four** result rasters, and all four are included: `maxdepth
 `duration` (days), `maxvelocity` (m/s) and `vh` (velocity x depth hazard, m2/s) — 42
 runs x 4 variables = **168 rasters**. A variable selector sits above the scenario list,
 and textures load on demand, so a session only fetches the handful actually viewed
-rather than all 12 MB. Rasters arrive
+rather than all 12 MB.
+
+Each variable carries its own colour ramp, so the legend card switches with it. The
+ramps are read from the portal's SLD via WMS `GetStyles` and drawn natively rather than
+shown as the `GetLegendGraphic` bitmap — that image labels every break "0.0000" and
+brings its own typography. Ranges: depth 0-4 m, duration 0-35 days, velocity 0-1 m/s,
+hazard 0-1 m2/s.
+
+Rasters arrive
 via WMS because WCS is disabled, so they carry the portal's colour ramp and cannot be
 queried for depth values. The model covers the Indus right bank only, roughly
 26.15-29.24 N — blank areas inside a scenario are unmodelled, not dry.

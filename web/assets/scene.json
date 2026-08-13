@@ -1199,25 +1199,158 @@
     "key": "maxdepth",
     "label": "Max inundation depth",
     "unit": "m",
-    "included": true
+    "included": true,
+    "ramp": [
+     {
+      "color": "#f7fbff",
+      "value": 0.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#c8dcf0",
+      "value": 1.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#73b2d8",
+      "value": 2.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#2979b9",
+      "value": 3.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#08306b",
+      "value": 4.0,
+      "opacity": 1.0
+     }
+    ]
    },
    {
     "key": "duration",
     "label": "Inundation duration",
     "unit": "days",
-    "included": true
+    "included": true,
+    "ramp": [
+     {
+      "color": "#ff00ff",
+      "value": 0.0,
+      "opacity": 0.0
+     },
+     {
+      "color": "#2b83ba",
+      "value": 1.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#abdda4",
+      "value": 8.75,
+      "opacity": 1.0
+     },
+     {
+      "color": "#ffffbf",
+      "value": 17.5,
+      "opacity": 1.0
+     },
+     {
+      "color": "#fdae61",
+      "value": 26.25,
+      "opacity": 1.0
+     },
+     {
+      "color": "#d7191c",
+      "value": 35.0,
+      "opacity": 1.0
+     }
+    ]
    },
    {
     "key": "maxvelocity",
     "label": "Max flow velocity",
     "unit": "m/s",
-    "included": true
+    "included": true,
+    "ramp": [
+     {
+      "color": "#2b83ba",
+      "value": 0.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#6eb2af",
+      "value": 0.13,
+      "opacity": 1.0
+     },
+     {
+      "color": "#aedea5",
+      "value": 0.26,
+      "opacity": 1.0
+     },
+     {
+      "color": "#daf0b3",
+      "value": 0.39,
+      "opacity": 1.0
+     },
+     {
+      "color": "#fff9b7",
+      "value": 0.52,
+      "opacity": 1.0
+     },
+     {
+      "color": "#fece87",
+      "value": 0.65,
+      "opacity": 1.0
+     },
+     {
+      "color": "#f89c59",
+      "value": 0.78,
+      "opacity": 1.0
+     },
+     {
+      "color": "#e65538",
+      "value": 0.9,
+      "opacity": 1.0
+     },
+     {
+      "color": "#d7191c",
+      "value": 1.0,
+      "opacity": 1.0
+     }
+    ]
    },
    {
     "key": "vh",
     "label": "Hazard (velocity x depth)",
     "unit": "m2/s",
-    "included": true
+    "included": true,
+    "ramp": [
+     {
+      "color": "#2b83ba",
+      "value": 0.0,
+      "opacity": 1.0
+     },
+     {
+      "color": "#abdda4",
+      "value": 0.25,
+      "opacity": 1.0
+     },
+     {
+      "color": "#ffffbf",
+      "value": 0.5,
+      "opacity": 1.0
+     },
+     {
+      "color": "#fdae61",
+      "value": 0.75,
+      "opacity": 1.0
+     },
+     {
+      "color": "#d7191c",
+      "value": 1.0,
+      "opacity": 1.0
+     }
+    ]
    }
   ],
   "bbox": [

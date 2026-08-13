@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '29';
+const BUILD = '30';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
@@ -1045,12 +1045,13 @@ if (SCEN.length) {
   sel.addEventListener('change', e => {
     showScenario(e.target.value);
     $('scen-note').style.display = e.target.value ? 'block' : 'none';
+    drawScenLegend();
   });
   const vsel = $('var-sel');
   const vars = (S.scenarios.variables || []).filter(v => v.included);
   vsel.innerHTML = vars.map(v =>
     `<option value="${v.key}">${v.label} (${v.unit})</option>`).join('');
-  vsel.addEventListener('change', e => showScenario(null, e.target.value));
+  vsel.addEventListener('change', e => { showScenario(null, e.target.value); drawScenLegend(); });
   const nRas = SCEN.reduce((n, s) => n + Object.keys(s.files || {}).length, 0);
   $('scen-count').textContent =
     `${SCEN.length} runs \u00d7 ${vars.length} variables \u00b7 ${nRas} rasters`;
@@ -1131,6 +1132,33 @@ document.body.appendChild(varTip);
                            'canals', 'drains', 'srpsub', 'naisub']);
   const orphan = PICK.map(l => l.name).filter(n => !toggled.has(n));
   if (orphan.length) console.warn('pickable layers with no visibility toggle:', orphan);
+}
+
+
+// Scenario legend, rendered natively from the SLD colour map rather than shown as the
+// portal's GetLegendGraphic bitmap — that image labels every break "0.0000" and carries
+// its own typography. Reading the ramp lets the key match the rest of the interface and
+// keeps the numbers legible.
+function drawScenLegend() {
+  const box = $('scen-legend');
+  const vars = ((S.scenarios && S.scenarios.variables) || []);
+  const v = vars.find(x => x.key === scenVar);
+  if (!scenId || !v || !v.ramp || !v.ramp.length) { box.style.display = 'none'; return; }
+  const lo = v.ramp[0].value, hi = v.ramp[v.ramp.length - 1].value;
+  const span = (hi - lo) || 1;
+  const grad = v.ramp
+    .map(s => `${s.color} ${((s.value - lo) / span * 100).toFixed(1)}%`).join(', ');
+  const fmt = n => (Math.abs(n) >= 10 ? n.toFixed(0)
+                  : Number.isInteger(n) ? String(n) : n.toFixed(1));
+  const ticks = v.ramp.map(s =>
+    `<span style="left:${((s.value - lo) / span * 100).toFixed(1)}%">${fmt(s.value)}</span>`
+  ).join('');
+  box.innerHTML =
+    `<h3>${v.label}</h3>` +
+    `<div class="ramp" style="background:linear-gradient(90deg, ${grad})"></div>` +
+    `<div class="ticks">${ticks}</div>` +
+    `<div class="unit">${v.unit} · SRP-SID DSS colour map</div>`;
+  box.style.display = 'block';
 }
 
 // ── orientation gizmo ───────────────────────────────────────────────────────
