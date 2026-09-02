@@ -157,7 +157,13 @@ if built:
                  cy - plat[None, :]) * 111.32          # km, polygons x places
     owner = d.argmin(axis=1)
     best = d.min(axis=1)
-    MAX_KM = 12.0
+    # A town's own built-up land is contiguous with its gazetteer point. At 12 km a
+    # place also claimed the residential blobs of every UNLABELLED village around it
+    # -- most villages in the frame have no owner in places.json, so they were all
+    # absorbed by whichever labelled town was nearest and dissolved into its
+    # footprint. That put 24 of 73 footprints more than 4 km from their own label;
+    # Sita Road's 0.94 km2 "city" sat 8.3 km from Sita Road.
+    MAX_KM = 3.0
     for pi, p in enumerate(places):
         mask = (owner == pi) & (best < MAX_KM)
         if not mask.any():
