@@ -104,19 +104,11 @@
   "curated": false
  },
  {
-  "name": "Khairpur Mir\u2019s",
+  "name": "Khairpur",
   "lon": 68.7592,
   "lat": 27.5295,
   "pop": 191044,
   "fcode": "PPLA2",
-  "curated": false
- },
- {
-  "name": "Arif Wala",
-  "lon": 66.2959,
-  "lat": 26.3248,
-  "pop": 157063,
-  "fcode": "PPL",
   "curated": false
  },
  {
@@ -288,14 +280,6 @@
   "curated": false
  },
  {
-  "name": "Kot Malik Barkhurdar",
-  "lon": 66.9872,
-  "lat": 30.2038,
-  "pop": 69359,
-  "fcode": "PPLX",
-  "curated": false
- },
- {
   "name": "Usta Mohammad",
   "lon": 68.0437,
   "lat": 28.1772,
@@ -368,14 +352,6 @@
   "curated": true
  },
  {
-  "name": "Khairpur",
-  "lon": 69.7036,
-  "lat": 28.0644,
-  "pop": 40083,
-  "fcode": "PPL",
-  "curated": true
- },
- {
   "name": "Chak",
   "lon": 68.8338,
   "lat": 27.8584,
@@ -397,14 +373,6 @@
   "lat": 30.3705,
   "pop": 37787,
   "fcode": "PPLA2",
-  "curated": false
- },
- {
-  "name": "Mehrabpur",
-  "lon": 68.0255,
-  "lat": 28.1077,
-  "pop": 35263,
-  "fcode": "PPL",
   "curated": false
  },
  {
@@ -632,22 +600,6 @@
   "curated": true
  },
  {
-  "name": "S\u016bi",
-  "lon": 69.3167,
-  "lat": 28.6167,
-  "pop": 0,
-  "fcode": "PPL",
-  "curated": true
- },
- {
-  "name": "Qambar",
-  "lon": 67.6522,
-  "lat": 27.1601,
-  "pop": 0,
-  "fcode": "PPL",
-  "curated": true
- },
- {
   "name": "Mohenjo-daro",
   "lon": 68.137,
   "lat": 27.3221,
@@ -656,9 +608,9 @@
   "curated": true
  },
  {
-  "name": "Kotri",
-  "lon": 68.164,
-  "lat": 28.0068,
+  "name": "Mehrabpur",
+  "lon": 68.4196,
+  "lat": 27.1033,
   "pop": 0,
   "fcode": "PPL",
   "curated": true
@@ -672,25 +624,9 @@
   "curated": true
  },
  {
-  "name": "Sh\u012bk\u0101rpur",
-  "lon": 67.69,
-  "lat": 28.749,
-  "pop": 0,
-  "fcode": "PPL",
-  "curated": true
- },
- {
   "name": "Sui",
   "lon": 69.1789,
   "lat": 28.6317,
-  "pop": 0,
-  "fcode": "PPL",
-  "curated": true
- },
- {
-  "name": "Jhat Pat",
-  "lon": 68.187,
-  "lat": 28.392,
   "pop": 0,
   "fcode": "PPL",
   "curated": true

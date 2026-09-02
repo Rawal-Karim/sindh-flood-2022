@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 // whenever the AOI or the composite changes, and browsers happily serve the previous
 // scene.json against the same path — which shows up as correct-looking but stale
 // figures. Bump BUILD (and ?v= on the script tag in index.html) on every rebuild.
-const BUILD = '30';
+const BUILD = '31';
 const A = path => `./assets/${path}?b=${BUILD}`;
 
 // ── load ────────────────────────────────────────────────────────────────────
