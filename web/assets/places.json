@@ -48,7 +48,7 @@
   "curated": true
  },
  {
-  "name": "Saddiqabad",
+  "name": "Sadiqabad",
   "lon": 70.1265,
   "lat": 28.3091,
   "pop": 274210,
@@ -256,7 +256,7 @@
   "curated": true
  },
  {
-  "name": "Kambar",
+  "name": "Qambar",
   "lon": 68.0007,
   "lat": 27.5875,
   "pop": 77481,
@@ -296,7 +296,7 @@
   "curated": false
  },
  {
-  "name": "Pir Jo Goth",
+  "name": "Pirjo Goth",
   "lon": 68.6185,
   "lat": 27.5918,
   "pop": 54266,
@@ -400,7 +400,7 @@
   "curated": false
  },
  {
-  "name": "Setharja Old",
+  "name": "Setharja",
   "lon": 68.4688,
   "lat": 27.2127,
   "pop": 32651,
@@ -528,7 +528,7 @@
   "curated": false
  },
  {
-  "name": "Pad Idan",
+  "name": "Padidan",
   "lon": 68.3009,
   "lat": 26.7746,
   "pop": 20919,
@@ -568,7 +568,7 @@
   "curated": true
  },
  {
-  "name": "Dadhar",
+  "name": "Dhadar",
   "lon": 67.6517,
   "lat": 29.4749,
   "pop": 17276,
@@ -576,7 +576,7 @@
   "curated": false
  },
  {
-  "name": "Bhan Saeedabad",
+  "name": "Bhan Syedabad",
   "lon": 67.7214,
   "lat": 26.5583,
   "pop": 16961,

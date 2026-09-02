@@ -44,13 +44,21 @@ MIN_POP = 15000
 # gazetteer spelling -> label shown on the map
 ALIASES = {
     "moen jo daro": "Mohenjo-daro",
-    "bhan": "Bhan Saeedabad",
+    "bhan": "Bhan Syedabad",
     "naushahro firoz": "Naushahro Feroze",
     "kashmor": "Kashmore",
     "usta muhammad": "Usta Mohammad",
     "dera allahyar": "Dera Allah Yar",
     "khairpur nathan shah": "K.N. Shah",
     "shahdad kot": "Shahdadkot",
+    # Where GeoNames and the Department (and Google) spell a town differently, the
+    # map follows local usage. Verified against Google Maps 2026-09-02.
+    "kambar": "Qambar",
+    "saddiqabad": "Sadiqabad",
+    "dadhar": "Dhadar",
+    "pad idan": "Padidan",
+    "setharja old": "Setharja",
+    "pir jo goth": "Pirjo Goth",
     # GeoNames writes the district town with a curly apostrophe; the Department
     # writes plain "Khairpur", and nothing else on the map competes for that name
     # now that the Ghotki namesake is excluded.
